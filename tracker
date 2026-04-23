@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShiftCore — Assembly Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f0ede8; --bg2:#e8e4de; --surface:#ffffff; --surface2:#f5f2ed;
+  --border:#d4cfc8; --text:#1a1714; --text2:#6b6560; --text3:#9e9890;
+  --accent:#e8430a; --accent2:#f5a623; --accent3:#2a7d4f;
+  --blue:#1a5fa8; --red:#c0392b;
+  --shadow:0 2px 12px rgba(0,0,0,0.08); --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
+  --radius:16px; --radius-sm:10px;
+  --font:'Syne',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0f0e0c; --bg2:#181612; --surface:#1e1c18; --surface2:#252320;
+  --border:#2e2c28; --text:#f0ede8; --text2:#9e9890; --text3:#5a5650;
+  --accent:#ff5520; --accent2:#f5a623; --accent3:#3ab069;
+  --blue:#4a9fd4; --red:#e05555;
+  --shadow:0 2px 12px rgba(0,0,0,0.3); --shadow-lg:0 8px 32px rgba(0,0,0,0.4);
+}}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+
+/* ── WELCOME ── */
+#screen-welcome{align-items:center;justify-content:center;padding:40px 24px;position:relative;overflow:hidden;}
+#screen-welcome::before{content:'';position:absolute;top:-120px;right:-120px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 15%,transparent),transparent 70%);pointer-events:none;}
+#screen-welcome::after{content:'';position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--blue) 10%,transparent),transparent 70%);pointer-events:none;}
+.welcome-inner{width:100%;max-width:480px;display:flex;flex-direction:column;gap:36px;position:relative;z-index:1;}
+.brand{display:flex;flex-direction:column;gap:6px;}
+.brand-label{font-family:var(--mono);font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--text3);}
+.brand-title{font-size:clamp(42px,10vw,68px);font-weight:800;line-height:1;letter-spacing:-2px;}
+.brand-title span{color:var(--accent);}
+.brand-sub{font-size:15px;color:var(--text2);font-weight:400;margin-top:4px;}
+.welcome-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow-lg);}
+.welcome-card h2{font-size:20px;font-weight:700;margin-bottom:24px;}
+.field-group{display:flex;flex-direction:column;gap:16px;}
+.field{display:flex;flex-direction:column;gap:8px;}
+.field label{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);}
+.field input,.field select{width:100%;padding:14px 16px;font-family:var(--font);font-size:15px;font-weight:500;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);outline:none;transition:border-color 0.2s;}
+.field input:focus,.field select:focus{border-color:var(--accent);}
+.field select option{background:var(--surface);}
+.btn-primary{width:100%;padding:16px;font-family:var(--font);font-size:16px;font-weight:700;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 16px color-mix(in srgb,var(--accent) 40%,transparent);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-primary:active{transform:translateY(0);}
+.btn-secondary{padding:12px 20px;font-family:var(--font);font-size:14px;font-weight:600;background:var(--surface2);color:var(--text);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.history-link{text-align:center;font-size:13px;color:var(--text3);}
+.history-link a{color:var(--blue);cursor:pointer;text-decoration:none;font-weight:600;}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;gap:8px;}
+.topbar-left{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.topbar-label{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
+.topbar-name{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.shift-clock{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--accent);letter-spacing:-0.5px;}
+.topbar-clocks{display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
+.wall-clock{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:1px;}
+.history-icon-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;cursor:pointer;font-size:16px;transition:all 0.15s;text-decoration:none;flex-shrink:0;}
+.history-icon-btn:hover{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 8%,var(--surface2));}
+.pause-btn{display:flex;align-items:center;gap:6px;padding:9px 16px;font-family:var(--font);font-size:13px;font-weight:700;background:var(--surface2);border:1.5px solid var(--border);border-radius:999px;color:var(--text2);cursor:pointer;transition:all 0.15s;}
+.pause-btn:hover,.pause-btn.is-paused{border-color:var(--accent2);color:var(--accent2);background:color-mix(in srgb,var(--accent2) 8%,var(--surface2));}
+.pause-btn svg{width:14px;height:14px;}
+.pause-banner{display:none;background:color-mix(in srgb,var(--accent2) 10%,var(--surface));border-bottom:2px solid var(--accent2);padding:10px 20px;align-items:center;justify-content:space-between;gap:10px;}
+.pause-banner.visible{display:flex;}
+.pb-left{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--accent2);}
+.pb-dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.btn-resume{padding:8px 18px;font-family:var(--font);font-size:13px;font-weight:700;background:var(--accent2);color:#000;border:none;border-radius:8px;cursor:pointer;}
+
+/* ── TASK SETUP ── */
+#screen-task{padding:0;}
+.task-content{padding:20px;display:flex;flex-direction:column;gap:16px;flex:1;overflow-y:auto;}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+.card-title{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:20px;}
+.type-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:4px;}
+@media(min-width:500px){.type-grid{grid-template-columns:repeat(3,1fr);}}
+.type-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:16px 10px;background:var(--surface2);border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;font-family:var(--font);}
+.type-btn .t-icon{font-size:26px;}
+.type-btn .t-lbl{font-size:12px;font-weight:700;letter-spacing:0.3px;color:var(--text2);text-align:center;line-height:1.3;}
+.type-btn:hover{border-color:var(--accent);}
+.type-btn.selected{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface2));}
+.type-btn.selected .t-lbl{color:var(--accent);}
+
+/* ── ACTIVE TASK ── */
+#screen-active{padding:0;}
+.active-scroll{padding:16px 20px 100px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;flex:1;}
+.task-id-card{background:var(--accent);border-radius:var(--radius);padding:20px 22px;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.tic-left{min-width:0;}
+.tic-type{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;opacity:0.8;margin-bottom:4px;}
+.tic-name{font-size:clamp(16px,4.5vw,22px);font-weight:800;line-height:1.2;word-break:break-word;}
+.tic-wo{font-family:var(--mono);font-size:12px;opacity:0.75;margin-top:4px;}
+.tic-right{text-align:right;flex-shrink:0;}
+.tic-qty{font-family:var(--mono);font-size:30px;font-weight:700;line-height:1;}
+.tic-qty-lbl{font-size:11px;opacity:0.75;letter-spacing:1px;}
+
+.phase-block{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.phase-block-header{padding:14px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.phase-block-title{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
+.phase-overall-timer{font-family:var(--mono);font-size:13px;color:var(--text2);}
+.phases-list{display:flex;flex-direction:column;}
+.phase-row{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--border);transition:background 0.15s;position:relative;}
+.phase-row:last-child{border-bottom:none;}
+.phase-row.ph-active{background:color-mix(in srgb,var(--accent3) 6%,var(--surface));}
+.phase-row.ph-done{background:color-mix(in srgb,var(--accent3) 3%,var(--surface));opacity:0.8;}
+.phase-row::before{content:'';width:3px;position:absolute;left:0;top:0;bottom:0;border-radius:0 2px 2px 0;background:transparent;transition:background 0.2s;}
+.phase-row.ph-active::before{background:var(--accent3);}
+.phase-row.ph-done::before{background:var(--blue);}
+.ph-icon-wrap{font-size:18px;width:26px;text-align:center;flex-shrink:0;}
+.ph-info{flex:1;min-width:0;}
+.ph-name{font-size:13px;font-weight:700;}
+.ph-status-text{font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-top:2px;}
+.phase-row.ph-active .ph-status-text{color:var(--accent3);}
+.phase-row.ph-done .ph-status-text{color:var(--blue);}
+.ph-timer-wrap{text-align:right;flex-shrink:0;}
+.ph-timer{font-family:var(--mono);font-size:17px;font-weight:500;color:var(--text);display:block;}
+.phase-row.ph-active .ph-timer{color:var(--accent3);}
+.ph-actions{display:flex;gap:5px;flex-shrink:0;}
+.ph-btn{padding:7px 12px;font-family:var(--font);font-size:11px;font-weight:700;border-radius:8px;cursor:pointer;border:none;transition:all 0.15s;white-space:nowrap;}
+.ph-btn-start{background:var(--accent3);color:#fff;}
+.ph-btn-start:hover{opacity:0.85;transform:translateY(-1px);}
+.ph-btn-stop{background:color-mix(in srgb,var(--red) 12%,var(--surface2));color:var(--red);border:1.5px solid color-mix(in srgb,var(--red) 30%,var(--border));}
+.ph-btn-stop:hover{background:var(--red);color:#fff;}
+.ph-btn-done-badge{padding:5px 10px;font-family:var(--mono);font-size:10px;background:color-mix(in srgb,var(--blue) 10%,var(--surface2));color:var(--blue);border:1.5px solid color-mix(in srgb,var(--blue) 25%,var(--border));border-radius:7px;}
+.ph-btn-restart{padding:5px 9px;font-family:var(--font);font-size:11px;font-weight:700;background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;cursor:pointer;color:var(--text2);transition:all 0.15s;}
+.ph-btn-restart:hover{border-color:var(--accent3);color:var(--accent3);}
+
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+@media(min-width:500px){.stats-grid{grid-template-columns:repeat(4,1fr);}}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 12px;}
+.stat-box-clock{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 12px;border-left:3px solid var(--accent3);grid-column:1/-1;}
+.clock-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.clock-item{display:flex;flex-direction:column;gap:3px;}
+.clock-time{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--accent3);letter-spacing:1px;}
+.clock-time.end-clr{color:var(--blue);}
+.clock-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent3);animation:blink 1s infinite;margin-right:5px;vertical-align:middle;}
+.clock-divider{width:1px;height:36px;background:var(--border);flex-shrink:0;}
+.clock-elapsed{font-family:var(--mono);font-size:13px;color:var(--text2);}
+.s-lbl{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
+.s-val{font-family:var(--mono);font-size:19px;font-weight:500;color:var(--text);}
+.s-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+
+.qty-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.qty-label{font-size:14px;font-weight:700;}
+.qty-controls{display:flex;align-items:center;gap:12px;}
+.qty-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;font-size:20px;font-weight:700;cursor:pointer;color:var(--text);transition:all 0.15s;}
+.qty-btn:hover{border-color:var(--accent);color:var(--accent);}
+.qty-num{font-family:var(--mono);font-size:28px;font-weight:700;min-width:44px;text-align:center;}
+
+.float-bar{position:fixed;bottom:0;left:0;right:0;padding:13px 20px 26px;background:linear-gradient(to top,var(--bg) 65%,transparent);display:flex;gap:10px;z-index:90;}
+.float-btn-end{flex:1;padding:14px;font-family:var(--font);font-size:14px;font-weight:700;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);transition:all 0.15s;}
+.float-btn-end:hover{border-color:var(--red);color:var(--red);}
+.float-btn-submit{flex:2;padding:14px;font-family:var(--font);font-size:15px;font-weight:700;background:var(--accent3);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;box-shadow:0 4px 16px color-mix(in srgb,var(--accent3) 40%,transparent);}
+.float-btn-submit:hover{transform:translateY(-1px);}
+
+/* ── BOTTOM SHEET OVERLAY (shared) ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);z-index:400;display:none;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.sheet{width:100%;max-width:480px;background:var(--surface);border-radius:24px 24px 0 0;padding:28px 20px 36px;box-shadow:0 -8px 40px rgba(0,0,0,0.2);animation:slideUp 0.25s ease;}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.sheet-drag{width:40px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 20px;}
+.sheet-title{font-size:18px;font-weight:800;margin-bottom:6px;}
+.sheet-sub{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5;}
+.sheet-info-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.sheet-chip{font-family:var(--mono);font-size:11px;padding:5px 10px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);}
+.sheet-btns{display:flex;flex-direction:column;gap:10px;}
+.sheet-btn-danger{width:100%;padding:15px;font-family:var(--font);font-size:15px;font-weight:700;background:var(--red);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:opacity 0.15s;}
+.sheet-btn-danger:hover{opacity:0.88;}
+.sheet-btn-cancel{width:100%;padding:14px;font-family:var(--font);font-size:14px;font-weight:600;background:transparent;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);transition:all 0.15s;}
+.sheet-btn-cancel:hover{border-color:var(--text);color:var(--text);}
+.sheet-warn-icon{font-size:36px;margin-bottom:12px;}
+
+/* pause options */
+.pause-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.pause-opt{display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 6px;background:var(--surface2);border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;}
+.pause-opt .po-icon{font-size:24px;}
+.pause-opt .po-lbl{font-size:11px;font-weight:700;text-align:center;color:var(--text2);}
+.pause-opt:hover,.pause-opt.sel{border-color:var(--accent2);background:color-mix(in srgb,var(--accent2) 8%,var(--surface2));}
+.pause-opt.sel .po-lbl{color:var(--accent2);}
+
+/* ── END SHIFT SCREEN ── */
+#screen-end{overflow-y:auto;}
+.end-hero{background:var(--surface);border-bottom:1px solid var(--border);padding:32px 20px 24px;text-align:center;}
+.end-icon{font-size:52px;margin-bottom:10px;}
+.end-hero h2{font-size:26px;font-weight:800;margin-bottom:5px;}
+.end-hero p{color:var(--text2);font-size:13px;}
+.end-content{padding:20px;display:flex;flex-direction:column;gap:16px;}
+.sum-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+@media(min-width:480px){.sum-grid{grid-template-columns:repeat(4,1fr);}}
+
+/* Compact expandable task list */
+.task-summary-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);border-left:3px solid var(--accent3);overflow:hidden;}
+.tsi-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;transition:background 0.15s;user-select:none;}
+.tsi-header:hover{background:var(--surface2);}
+.tsi-icon{font-size:18px;flex-shrink:0;}
+.tsi-info{flex:1;min-width:0;}
+.tsi-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tsi-meta{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px;}
+.tsi-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.tsi-total{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent3);}
+.tsi-chevron{font-size:12px;color:var(--text3);transition:transform 0.2s;}
+.tsi-header.open .tsi-chevron{transform:rotate(180deg);}
+.tsi-body{display:none;padding:0 16px 14px;border-top:1px solid var(--border);background:var(--surface2);}
+.tsi-body.open{display:block;}
+.tsi-phases{display:flex;flex-direction:column;gap:6px;margin-top:12px;}
+.tsi-phase-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;}
+.tsi-phase-name{display:flex;align-items:center;gap:6px;color:var(--text2);}
+.tsi-phase-time{font-family:var(--mono);font-size:12px;color:var(--text);}
+.tsi-avg{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;}
+.tsi-avg-lbl{color:var(--text3);font-family:var(--mono);}
+.tsi-avg-val{font-family:var(--mono);font-weight:600;color:var(--blue);}
+
+.export-row{display:flex;gap:10px;}
+.btn-export{flex:1;padding:14px;font-family:var(--font);font-size:14px;font-weight:700;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;}
+.btn-export:hover{border-color:var(--blue);color:var(--blue);}
+.btn-new{width:100%;padding:16px;font-family:var(--font);font-size:16px;font-weight:700;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;box-shadow:0 4px 16px color-mix(in srgb,var(--accent) 40%,transparent);margin-bottom:32px;transition:all 0.15s;}
+.btn-new:hover{transform:translateY(-1px);}
+
+/* ── HISTORY SCREEN ── */
+#screen-history{overflow-y:auto;}
+.history-topbar{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.btn-back{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;cursor:pointer;color:var(--text);font-size:18px;transition:all 0.15s;flex-shrink:0;}
+.btn-back:hover{border-color:var(--accent);color:var(--accent);}
+.history-topbar h2{font-size:20px;font-weight:800;flex:1;}
+
+/* Tabs */
+.tab-bar{display:flex;gap:0;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;}
+.tab-btn{flex:1;padding:14px 10px;font-family:var(--font);font-size:13px;font-weight:700;background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;color:var(--text3);transition:all 0.15s;text-align:center;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-panel{display:none;padding:16px 20px 40px;flex-direction:column;gap:8px;}
+.tab-panel.active{display:flex;}
+
+/* Shift history card */
+.shift-hcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);border-left:3px solid var(--accent);overflow:hidden;}
+.shc-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;transition:background 0.15s;}
+.shc-header:hover{background:var(--surface2);}
+.shc-info{flex:1;min-width:0;}
+.shc-name{font-size:15px;font-weight:700;}
+.shc-meta{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px;}
+.shc-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.shc-chip{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surface2);color:var(--text2);}
+.shc-chevron{font-size:12px;color:var(--text3);transition:transform 0.2s;flex-shrink:0;}
+.shc-header.open .shc-chevron{transform:rotate(180deg);}
+.shc-body{display:none;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface2);}
+.shc-body.open{display:block;}
+.shc-task-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.shc-task-row:last-child{border-bottom:none;}
+.shc-task-name{color:var(--text2);}
+.shc-task-time{font-family:var(--mono);font-size:12px;}
+
+/* Task history card */
+.task-hcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);border-left:3px solid var(--blue);padding:14px 16px;}
+.thc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.thc-type{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:3px;}
+.thc-name{font-size:14px;font-weight:700;}
+.thc-right{text-align:right;}
+.thc-total{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent3);}
+.thc-date{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px;}
+.thc-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.thc-chip{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:5px;background:var(--surface2);color:var(--text2);border-left:2px solid var(--accent3);}
+
+
+/* ── PHASE TIMELINE BAR ── */
+.phase-timeline { margin-top:14px; }
+.ptl-label { font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; }
+.ptl-bar { display:flex; height:28px; border-radius:8px; overflow:hidden; gap:2px; background:var(--surface2); }
+.ptl-seg {
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:10px; font-weight:600;
+  color:#fff; min-width:4px; transition:flex 0.4s ease;
+  overflow:hidden; white-space:nowrap; padding:0 4px;
+  position:relative;
+}
+.ptl-seg:first-child { border-radius:8px 0 0 8px; }
+.ptl-seg:last-child  { border-radius:0 8px 8px 0; }
+.ptl-seg.only { border-radius:8px; }
+.ptl-legend { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.ptl-leg-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--text2); }
+.ptl-leg-dot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+.ptl-leg-time { font-family:var(--mono); font-size:11px; color:var(--text); margin-left:2px; }
+.ptl-zero { display:flex; align-items:center; justify-content:center; width:100%; font-family:var(--mono); font-size:11px; color:var(--text3); }
+
+/* active task timeline in stats */
+.stat-timeline { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px 16px; }
+.stat-timeline .s-lbl { font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--text3); margin-bottom:10px; }
+
+
+/* ── STARSHIP ROBOT ANIMATION ── */
+.starship-wrap {
+  width:100%; overflow:hidden;
+  padding:6px 0 4px;
+  pointer-events:none;
+  position:relative;
+  height:58px;
+}
+.starship-track {
+  position:absolute;
+  bottom:6px; left:0; right:0;
+  height:1px;
+  background: linear-gradient(to right, transparent, var(--border) 8%, var(--border) 92%, transparent);
+}
+.starship-bot {
+  position:absolute;
+  bottom:6px;
+  animation: bot-drive 12s linear infinite;
+  transform-origin: center bottom;
+  will-change: left;
+}
+@keyframes bot-drive {
+  0%      { left:-70px; transform:scaleX(1);  }
+  42%     { left:calc(100% + 10px); transform:scaleX(1);  }
+  42.01%  { left:calc(100% + 10px); transform:scaleX(-1); }
+  50%     { left:calc(100% + 10px); transform:scaleX(-1); }
+  92%     { left:-70px; transform:scaleX(-1); }
+  92.01%  { left:-70px; transform:scaleX(1);  }
+  100%    { left:-70px; transform:scaleX(1);  }
+}
+.starship-flag-grp {
+  animation: flag-wave 1.4s ease-in-out infinite alternate;
+  transform-origin: 40px 1px;
+}
+@keyframes flag-wave {
+  from { transform: rotate(-5deg); }
+  to   { transform: rotate(5deg);  }
+}
+
+/* ── DETAILED HISTORY TIMELINE ── */
+.det-timeline { padding:14px 0 4px; }
+.det-task-block {
+  margin-bottom:14px;
+  border-left:3px solid var(--border);
+  padding-left:14px;
+  position:relative;
+}
+.det-task-block::before {
+  content:'';
+  position:absolute; left:-5px; top:6px;
+  width:8px; height:8px; border-radius:50%;
+  background:var(--accent3); border:2px solid var(--surface2);
+}
+.det-task-header {
+  display:flex; justify-content:space-between; align-items:flex-start;
+  margin-bottom:8px; gap:8px;
+}
+.det-task-name { font-size:13px; font-weight:700; }
+.det-task-type { font-family:var(--mono); font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--text3); margin-top:2px; }
+.det-task-times { text-align:right; flex-shrink:0; }
+.det-task-total { font-family:var(--mono); font-size:13px; font-weight:600; color:var(--accent3); }
+.det-task-stamp { font-family:var(--mono); font-size:10px; color:var(--text3); margin-top:2px; }
+
+/* Phase steps inside task */
+.det-phase-list { display:flex; flex-direction:column; gap:0; }
+.det-phase-step {
+  display:flex; align-items:center; gap:10px;
+  padding:7px 0; border-bottom:1px dashed var(--border);
+  position:relative;
+}
+.det-phase-step:last-child { border-bottom:none; }
+.det-phase-icon { font-size:14px; width:20px; text-align:center; flex-shrink:0; }
+.det-phase-info { flex:1; min-width:0; }
+.det-phase-name { font-size:12px; font-weight:600; }
+.det-phase-bar-wrap { margin-top:4px; height:5px; background:var(--surface); border-radius:3px; overflow:hidden; }
+.det-phase-bar { height:100%; border-radius:3px; transition:width 0.5s ease; }
+.det-phase-time { font-family:var(--mono); font-size:12px; color:var(--text); white-space:nowrap; flex-shrink:0; }
+.det-phase-pct  { font-family:var(--mono); font-size:10px; color:var(--text3); white-space:nowrap; flex-shrink:0; }
+
+/* Shift summary row */
+.det-shift-footer {
+  margin-top:10px; padding:10px 12px;
+  background:var(--surface); border-radius:var(--radius-sm);
+  border:1px solid var(--border);
+  display:flex; flex-wrap:wrap; gap:8px;
+}
+.det-sf-item { display:flex; flex-direction:column; gap:2px; }
+.det-sf-lbl { font-family:var(--mono); font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text3); }
+.det-sf-val { font-family:var(--mono); font-size:13px; font-weight:600; color:var(--text); }
+
+.no-data{text-align:center;padding:60px 20px;color:var(--text3);font-size:14px;}
+.sec-label{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+
+/* Toast */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;font-weight:700;color:var(--accent3);box-shadow:var(--shadow-lg);z-index:9999;opacity:0;transition:opacity 0.25s,transform 0.25s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════
+  S1 — WELCOME
+══════════════════════ -->
+<div class="screen active" id="screen-welcome">
+  <div class="welcome-inner">
+    <div class="brand">
+      <div class="brand-label">Assembly · Production</div>
+      <div class="brand-title">Shift<span>Core</span></div>
+      <div class="brand-sub">Real-time shift &amp; assembly task tracker</div>
+    </div>
+    <div class="welcome-card">
+      <h2>Start Your Shift</h2>
+      <div class="field-group">
+        <div class="field"><label>Your Name</label><input type="text" id="inp-name" placeholder="e.g. Alex Torres" autocomplete="off"/></div>
+        <div class="field"><label>Shift Type</label>
+          <select id="inp-shift">
+            <option value="Day Shift">Day Shift (6am – 2pm)</option>
+            <option value="Afternoon Shift">Afternoon Shift (2pm – 10pm)</option>
+            <option value="Night Shift">Night Shift (10pm – 6am)</option>
+            <option value="Full Day">Full Day (8am – 5pm)</option>
+            <option value="Custom">Custom</option>
+          </select>
+        </div>
+        <button class="btn-primary" onclick="startShift()">▶ &nbsp;Begin Shift</button>
+      </div>
+    </div>
+    <div id="starship-welcome"></div>
+    <div class="history-link"><a onclick="openHistory()">📋 View Shift History</a></div>
+  </div>
+</div>
+
+<!-- ══════════════════════
+  S2 — TASK SETUP
+══════════════════════ -->
+<div class="screen" id="screen-task">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-label">Active Shift</div>
+      <div class="topbar-name" id="tb-name">—</div>
+    </div>
+    <div class="topbar-right">
+      <button class="history-icon-btn" onclick="openHistoryFromShift()" title="View History">📋</button>
+      <div class="topbar-clocks">
+        <div class="shift-clock" id="clk-task">00:00:00</div>
+        <div class="wall-clock" id="wall-clk-task">--:--:--</div>
+      </div>
+      <button class="pause-btn" id="pbtn-task" onclick="openPause()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        Pause
+      </button>
+    </div>
+  </div>
+  <div class="pause-banner" id="pb-task">
+    <div class="pb-left"><div class="pb-dot"></div><span id="pb-reason-task">Paused</span></div>
+    <button class="btn-resume" onclick="resumeWork()">Resume</button>
+  </div>
+  <div class="task-content">
+    <div class="card">
+      <div class="card-title">Select Task Type</div>
+      <div class="type-grid">
+        <button class="type-btn" onclick="pickType(this,'TOF Camera')"><div class="t-icon">📷</div><div class="t-lbl">TOF Camera</div></button>
+        <button class="type-btn" onclick="pickType(this,'CDE 2.8 Camera')"><div class="t-icon">🎥</div><div class="t-lbl">CDE 2.8 Camera</div></button>
+        <button class="type-btn" onclick="pickType(this,'CDE 3.6')"><div class="t-icon">📹</div><div class="t-lbl">CDE 3.6</div></button>
+        <button class="type-btn" onclick="pickType(this,'Rear Electronics')"><div class="t-icon">🔌</div><div class="t-lbl">Rear Electronics</div></button>
+        <button class="type-btn" onclick="pickType(this,'Front Electronics')"><div class="t-icon">⚡</div><div class="t-lbl">Front Electronics</div></button>
+        <button class="type-btn" onclick="pickType(this,'CCC Assembly')"><div class="t-icon">🔧</div><div class="t-lbl">CCC Assembly</div></button>
+        <button class="type-btn" onclick="pickType(this,'Outside Assembly')"><div class="t-icon">📦</div><div class="t-lbl">Outside Assembly</div></button>
+      </div>
+      <div id="phase-preview" style="display:none;margin-top:12px;padding:12px 14px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Phases for this task</div>
+        <div id="phase-preview-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Task Details</div>
+      <div class="field-group">
+        <div class="field"><label>Task / Part Name</label><input type="text" id="inp-task-name" placeholder="e.g. Unit Serial #004" autocomplete="off"/></div>
+        <div class="field"><label>Work Order (WO#)</label><input type="text" id="inp-wo" placeholder="e.g. WO-2024-0087" autocomplete="off"/></div>
+        <div class="field"><label>Target Quantity</label><input type="number" id="inp-qty" placeholder="1" min="1" value="1"/></div>
+        <button class="btn-primary" onclick="beginTask()">▶ &nbsp;Start Task</button>
+      </div>
+    </div>
+    <div id="starship-task"></div>
+    <button class="btn-secondary" style="width:100%;text-align:center;" onclick="triggerEndShift()">⏹ End Shift</button>
+  </div>
+</div>
+
+<!-- ══════════════════════
+  S3 — ACTIVE TASK
+══════════════════════ -->
+<div class="screen" id="screen-active">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-label">Task Running</div>
+      <div class="topbar-name" id="tb-name-active">—</div>
+    </div>
+    <div class="topbar-right">
+      <button class="history-icon-btn" onclick="openHistoryFromShift()" title="View History">📋</button>
+      <div class="topbar-clocks">
+        <div class="shift-clock" id="clk-active">00:00:00</div>
+        <div class="wall-clock" id="wall-clk-active">--:--:--</div>
+      </div>
+      <button class="pause-btn" id="pbtn-active" onclick="openPause()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        Pause
+      </button>
+    </div>
+  </div>
+  <div class="pause-banner" id="pb-active">
+    <div class="pb-left"><div class="pb-dot"></div><span id="pb-reason-active">Paused</span></div>
+    <button class="btn-resume" onclick="resumeWork()">Resume</button>
+  </div>
+  <div class="active-scroll">
+    <div class="task-id-card">
+      <div class="tic-left">
+        <div class="tic-type" id="tic-type">—</div>
+        <div class="tic-name" id="tic-name">—</div>
+        <div class="tic-wo" id="tic-wo">WO# —</div>
+      </div>
+      <div class="tic-right">
+        <div class="tic-qty" id="tic-qty">×1</div>
+        <div class="tic-qty-lbl">Target</div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-label">Assembly Phases</div>
+      <div class="phase-block">
+        <div class="phase-block-header">
+          <div class="phase-block-title">Phases</div>
+          <div class="phase-overall-timer" id="phase-overall">Total: 00:00:00</div>
+        </div>
+        <div class="phases-list" id="phases-list"></div>
+      </div>
+    </div>
+    <div class="qty-row">
+      <div class="qty-label">Completed Units</div>
+      <div class="qty-controls">
+        <button class="qty-btn" onclick="adjQty(-1)">−</button>
+        <div class="qty-num" id="qty-num">1</div>
+        <button class="qty-btn" onclick="adjQty(1)">+</button>
+      </div>
+    </div>
+    <div>
+      <div class="sec-label">Task Statistics</div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="s-lbl">Total Task Time</div><div class="s-val" id="st-total">00:00:00</div><div class="s-sub">all phases</div></div>
+        <div class="stat-box"><div class="s-lbl">Avg / Unit</div><div class="s-val" id="st-avg">00:00:00</div><div class="s-sub">by qty</div></div>
+        <div class="stat-box"><div class="s-lbl">Break / Pause</div><div class="s-val" id="st-pause">00:00:00</div><div class="s-sub">not counted</div></div>
+        <div class="stat-box"><div class="s-lbl">Active Phase</div><div class="s-val" id="st-phase" style="font-size:14px;">—</div><div class="s-sub">currently running</div></div>
+      </div>
+      <!-- Task clock row -->
+      <div class="stat-box-clock" id="task-clock-box" style="display:none;margin-top:8px;">
+        <div class="s-lbl" style="margin-bottom:10px;">🕐 Task Time Stamps — Estonian Time</div>
+        <div class="clock-row">
+          <div class="clock-item">
+            <div class="s-lbl">Started</div>
+            <div class="clock-time" id="tc-start">—</div>
+          </div>
+          <div class="clock-divider"></div>
+          <div class="clock-item">
+            <div class="s-lbl">Current Time</div>
+            <div class="clock-time" id="tc-now"><span class="clock-live-dot"></span><span id="tc-now-val">--:--:--</span></div>
+          </div>
+          <div class="clock-divider"></div>
+          <div class="clock-item">
+            <div class="s-lbl">Running For</div>
+            <div class="clock-elapsed" id="tc-elapsed">00:00:00</div>
+          </div>
+        </div>
+      </div>
+      <div class="stat-timeline" style="margin-top:8px;">
+        <div class="s-lbl">Phase Time Breakdown</div>
+        <div id="active-timeline"></div>
+      </div>
+    </div>
+  <div id="starship-active" style="padding:0 20px;"></div>
+  </div>
+  <div class="float-bar">
+    <button class="float-btn-end" onclick="triggerEndShift()">⏹ End Shift</button>
+    <button class="float-btn-submit" onclick="triggerSubmitTask()">✓ &nbsp;Submit Task</button>
+  </div>
+</div>
+
+<!-- ══════════════════════
+  S4 — END SHIFT REPORT
+══════════════════════ -->
+<div class="screen" id="screen-end">
+  <div class="end-hero">
+    <div class="end-icon">🏁</div>
+    <h2>Shift Complete!</h2>
+    <p id="end-meta">—</p>
+  </div>
+  <div id="starship-end"></div>
+  <div class="end-content">
+    <div>
+      <div class="sec-label">Shift Summary</div>
+      <div class="sum-grid">
+        <div class="stat-box"><div class="s-lbl">Duration</div><div class="s-val" id="sum-dur">—</div></div>
+        <div class="stat-box"><div class="s-lbl">Tasks Done</div><div class="s-val" id="sum-tasks">0</div></div>
+        <div class="stat-box"><div class="s-lbl">Units Built</div><div class="s-val" id="sum-units">0</div></div>
+        <div class="stat-box"><div class="s-lbl">Total Break</div><div class="s-val" id="sum-break">—</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-label">Completed Tasks — tap to expand</div>
+      <div id="end-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+    <div class="export-row">
+      <button class="btn-export" onclick="exportCSV()">📄 Export CSV</button>
+      <button class="btn-export" onclick="exportPDF()">📑 Export PDF</button>
+    </div>
+    <button class="btn-new" onclick="newShift()">+ Start New Shift</button>
+  </div>
+</div>
+
+<!-- ══════════════════════
+  S5 — HISTORY
+══════════════════════ -->
+<div class="screen" id="screen-history">
+  <div class="history-topbar">
+    <button class="btn-back" onclick="showScreen(S._historyReturn||'screen-welcome')">←</button>
+    <h2>History</h2>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-shift-btn" onclick="switchTab('shift')">📅 Daily Shifts</button>
+    <button class="tab-btn" id="tab-task-btn" onclick="switchTab('task')">🔧 All Tasks</button>
+  </div>
+  <div class="tab-panel active" id="tab-shift" style="flex-direction:column;"></div>
+  <div class="tab-panel" id="tab-task" style="flex-direction:column;"></div>
+</div>
+
+<!-- ══════════════════════
+  OVERLAY — PAUSE
+══════════════════════ -->
+<div class="overlay" id="ov-pause">
+  <div class="sheet">
+    <div class="sheet-drag"></div>
+    <div class="sheet-title">Why are you pausing?</div>
+    <div class="pause-opts">
+      <button class="pause-opt" onclick="doPause(this,'🍽️','Lunch')"><div class="po-icon">🍽️</div><div class="po-lbl">Lunch</div></button>
+      <button class="pause-opt" onclick="doPause(this,'☕','Short Break')"><div class="po-icon">☕</div><div class="po-lbl">Short Break</div></button>
+      <button class="pause-opt" onclick="doPause(this,'📋','Meeting')"><div class="po-icon">📋</div><div class="po-lbl">Meeting</div></button>
+      <button class="pause-opt" onclick="doPause(this,'🏭','Outside')"><div class="po-icon">🏭</div><div class="po-lbl">Working Outside</div></button>
+      <button class="pause-opt" onclick="doPause(this,'⚠️','Troubleshooting')"><div class="po-icon">⚠️</div><div class="po-lbl">Troubleshooting</div></button>
+      <button class="pause-opt" onclick="doPause(this,'🔩','Missing Tool')"><div class="po-icon">🔩</div><div class="po-lbl">Missing Tool</div></button>
+    </div>
+    <button class="sheet-btn-cancel" onclick="closeOverlay('ov-pause')">Cancel</button>
+  </div>
+</div>
+
+<!-- ══════════════════════
+  OVERLAY — SUBMIT TASK WARNING
+══════════════════════ -->
+<div class="overlay" id="ov-submit">
+  <div class="sheet">
+    <div class="sheet-drag"></div>
+    <div class="sheet-warn-icon">✅</div>
+    <div class="sheet-title">Submit This Task?</div>
+    <div class="sheet-sub">All running phases will be stopped and time will be saved. You cannot undo this.</div>
+    <div class="sheet-info-row" id="submit-info-row"></div>
+    <div class="sheet-btns">
+      <button class="sheet-btn-danger" style="background:var(--accent3);" onclick="doSubmitTask()">✓ &nbsp;Confirm Submit</button>
+      <button class="sheet-btn-cancel" onclick="closeOverlay('ov-submit')">Cancel — Keep Working</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════
+  OVERLAY — END SHIFT WARNING
+══════════════════════ -->
+<div class="overlay" id="ov-end-shift">
+  <div class="sheet">
+    <div class="sheet-drag"></div>
+    <div class="sheet-warn-icon">⚠️</div>
+    <div class="sheet-title">End Your Shift?</div>
+    <div class="sheet-sub" id="end-shift-sub">This will close all active work and save your shift report.</div>
+    <div class="sheet-info-row" id="end-shift-info-row"></div>
+    <div class="sheet-btns">
+      <button class="sheet-btn-danger" onclick="doEndShift()">⏹ &nbsp;Yes, End Shift</button>
+      <button class="sheet-btn-cancel" onclick="closeOverlay('ov-end-shift')">Cancel — Keep Working</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// TASK TYPE → PHASES
+// ══════════════════════════════════════════════
+const TASK_PHASES = {
+  'TOF Camera':        [{key:'setup',    icon:'⚙️',label:'Setup Time'},{key:'assembly',icon:'🔧',label:'Assembly'},{key:'testing',icon:'🧪',label:'Testing'}],
+  'CDE 2.8 Camera':   [{key:'setup',    icon:'⚙️',label:'Setup'},{key:'flashing',icon:'💾',label:'Flashing'},{key:'testing',icon:'🧪',label:'Testing'}],
+  'CDE 3.6':          [{key:'setup',    icon:'⚙️',label:'Setup'},{key:'flashing',icon:'💾',label:'Flashing'},{key:'testing',icon:'🧪',label:'Testing'}],
+  'Rear Electronics': [{key:'setup',icon:'⚙️',label:'Setup'},{key:'lid_lock_assy',icon:'🔒',label:'Lid Lock Assembly'},{key:'lid_lock_test',icon:'🔍',label:'Lid Lock Testing'},{key:'rsdu_flash',icon:'💾',label:'RSDU Flashing'},{key:'elmos_test',icon:'⚡',label:'ELMOS Testing'},{key:'msc_test',icon:'🧮',label:'MSC Testing'},{key:'assembly',icon:'🔧',label:'Assembly'},{key:'cable_loom',icon:'🔌',label:'Cable Loom Assembly'}],
+  'Front Electronics':[{key:'setup',icon:'⚙️',label:'Setup'},{key:'cutting',icon:'✂️',label:'Cutting'},{key:'assembly',icon:'🔧',label:'Assembly'}],
+  'CCC Assembly':     [{key:'setup',icon:'⚙️',label:'Setup'},{key:'assembly',icon:'🔧',label:'Assembly'},{key:'testing',icon:'🧪',label:'Testing'}],
+  'Outside Assembly': [{key:'setup',icon:'⚙️',label:'Setup'},{key:'assembly',icon:'📦',label:'Assembly'}],
+};
+
+const TYPE_ICONS = {'TOF Camera':'📷','CDE 2.8 Camera':'🎥','CDE 3.6':'📹','Rear Electronics':'🔌','Front Electronics':'⚡','CCC Assembly':'🔧','Outside Assembly':'📦'};
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let S = {
+  workerName:'', shiftType:'', shiftStart:null,
+  completedTasks:[], totalPausedMs:0,
+  task:null, phases:{}, phaseKeys:[],
+  isPaused:false, pauseStart:null, pauseReason:'',
+  shiftTimer:null, tickTimer:null,
+};
+let selType = '';
+
+// ══════════════════════════════════════════════
+// SCREENS & OVERLAYS
+// ══════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function openOverlay(id) { document.getElementById(id).classList.add('open'); }
+function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
+
+// ══════════════════════════════════════════════
+// SESSION PERSISTENCE — save/restore on refresh
+// ══════════════════════════════════════════════
+function saveSession() {
+  if (!S.shiftStart) return;
+  // Snapshot running phase times before saving
+  const now = Date.now();
+  const phaseSnap = {};
+  S.phaseKeys.forEach(key => {
+    const ph = S.phases[key];
+    phaseSnap[key] = {
+      ...ph,
+      // freeze running time into totalMs so it restores correctly
+      totalMs: ph.state === 'running' && ph.startedAt ? ph.totalMs + (now - ph.startedAt) : ph.totalMs,
+      startedAt: null, // clear — will resume fresh
+      state: ph.state === 'running' ? 'stopped' : ph.state, // mark stopped so user re-starts manually
+    };
+  });
+  const session = {
+    workerName: S.workerName, shiftType: S.shiftType,
+    shiftStart: S.shiftStart, completedTasks: S.completedTasks,
+    totalPausedMs: S.totalPausedMs + (S.isPaused && S.pauseStart ? now - S.pauseStart : 0),
+    isPaused: false, pauseReason: '',
+    task: S.task, phases: phaseSnap, phaseKeys: S.phaseKeys,
+    activeScreen: S.task ? 'screen-active' : 'screen-task',
+  };
+  localStorage.setItem('sc_session', JSON.stringify(session));
+}
+
+function restoreSession() {
+  const raw = localStorage.getItem('sc_session');
+  if (!raw) return false;
+  try {
+    const session = JSON.parse(raw);
+    if (!session.shiftStart) return false;
+    S.workerName     = session.workerName;
+    S.shiftType      = session.shiftType;
+    S.shiftStart     = session.shiftStart;
+    S.completedTasks = session.completedTasks || [];
+    S.totalPausedMs  = session.totalPausedMs || 0;
+    S.isPaused       = false;
+    S.task           = session.task || null;
+    S.phases         = session.phases || {};
+    S.phaseKeys      = session.phaseKeys || [];
+
+    // Restore topbar names
+    document.getElementById('tb-name').textContent = S.workerName;
+    document.getElementById('tb-name-active').textContent = S.workerName;
+
+    // Start shift clock
+    clearInterval(S.shiftTimer);
+    S.shiftTimer = setInterval(tickShift, 1000);
+
+    if (S.task) {
+      // Restore active task UI
+      document.getElementById('tic-type').textContent = S.task.type;
+      document.getElementById('tic-name').textContent = S.task.name;
+      document.getElementById('tic-wo').textContent   = 'WO# ' + S.task.wo;
+      document.getElementById('tic-qty').textContent  = '×' + S.task.qty;
+      document.getElementById('qty-num').textContent  = S.task.qty;
+      renderPhaseRows();
+      // Restore phase UI state for stopped/done phases
+      S.phaseKeys.forEach(key => {
+        const ph = S.phases[key];
+        if (ph.state === 'stopped') {
+          document.getElementById('pr-'+key).className = 'phase-row ph-done';
+          document.getElementById('pst-'+key).textContent = '✓ Done — ' + fmt(ph.totalMs);
+          document.getElementById('pt-'+key).textContent = fmt(ph.totalMs);
+          document.getElementById('pa-'+key).innerHTML =
+            `<span class="ph-btn-done-badge">Done</span>
+             <button class="ph-btn-restart" onclick="restartPhase('${key}')">↺</button>`;
+        }
+      });
+      ['st-total','st-avg','st-pause'].forEach(id => document.getElementById(id).textContent = '00:00:00');
+      document.getElementById('st-phase').textContent = '—';
+      // Restore task clock
+      const tcBoxR = document.getElementById('task-clock-box');
+      if (tcBoxR) tcBoxR.style.display = 'block';
+      if (S.task && S.task.startTime) {
+        const startEETR = new Date(S.task.startTime).toLocaleTimeString('et-EE',{timeZone:'Europe/Tallinn',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        const tcStartR = document.getElementById('tc-start');
+        if (tcStartR) tcStartR.textContent = startEETR;
+      }
+      clearInterval(S.tickTimer);
+      S.tickTimer = setInterval(tickActive, 500);
+      showScreen('screen-active');
+      toast('Session restored — phases paused, restart to continue');
+    } else {
+      showScreen('screen-task');
+      resetTaskForm();
+    }
+    return true;
+  } catch(e) { localStorage.removeItem('sc_session'); return false; }
+}
+
+function clearSession() { localStorage.removeItem('sc_session'); }
+
+// Auto-save every 5 seconds while shift is active
+setInterval(() => { if (S.shiftStart) saveSession(); }, 5000);
+
+// ══════════════════════════════════════════════
+// SHIFT
+// ══════════════════════════════════════════════
+function startShift() {
+  const name = document.getElementById('inp-name').value.trim();
+  const shift = document.getElementById('inp-shift').value;
+  if (!name) { toast('Please enter your name'); return; }
+  S.workerName = name; S.shiftType = shift;
+  S.shiftStart = Date.now(); S.completedTasks = [];
+  S.totalPausedMs = 0; S.isPaused = false; S.task = null;
+  document.getElementById('tb-name').textContent = name;
+  document.getElementById('tb-name-active').textContent = name;
+  clearInterval(S.shiftTimer);
+  S.shiftTimer = setInterval(tickShift, 1000);
+  clearSession();
+  showScreen('screen-task');
+  resetTaskForm();
+}
+
+function tickShift() {
+  if (S.isPaused) return;
+  const t = fmt(Date.now() - S.shiftStart - S.totalPausedMs);
+  document.getElementById('clk-task').textContent   = t;
+  document.getElementById('clk-active').textContent = t;
+  // Wall clock
+  const wt = new Date().toLocaleTimeString('et-EE', {timeZone:'Europe/Tallinn', hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  const w1 = document.getElementById('wall-clk-task');
+  const w2 = document.getElementById('wall-clk-active');
+  if (w1) w1.textContent = wt;
+  if (w2) w2.textContent = wt;
+}
+
+// ══════════════════════════════════════════════
+// TASK FORM
+// ══════════════════════════════════════════════
+function pickType(btn, type) {
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selType = type;
+  const phases = TASK_PHASES[type] || [];
+  const list = document.getElementById('phase-preview-list');
+  list.innerHTML = phases.map(p =>
+    `<span style="font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:5px;background:var(--surface);border:1px solid var(--border);color:var(--text2);">${p.icon} ${p.label}</span>`
+  ).join('');
+  document.getElementById('phase-preview').style.display = 'block';
+}
+
+function resetTaskForm() {
+  selType = '';
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+  ['inp-task-name','inp-wo'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('inp-qty').value = '1';
+  document.getElementById('phase-preview').style.display = 'none';
+}
+
+function beginTask() {
+  // BLOCK: task already running — redirect back to active screen
+  if (S.task !== null) {
+    toast('⚠ A task is already running — submit it first!');
+    showScreen('screen-active');
+    return;
+  }
+  const name = document.getElementById('inp-task-name').value.trim();
+  const wo   = document.getElementById('inp-wo').value.trim();
+  const qty  = parseInt(document.getElementById('inp-qty').value) || 1;
+  if (!selType) { toast('Select a task type first'); return; }
+  if (!name)    { toast('Enter a task name'); return; }
+  if (!wo)      { toast('Enter a Work Order number'); return; }
+
+  const phaseDefs = TASK_PHASES[selType];
+  S.task = { name, wo, qty, type: selType, startTime: Date.now() };
+  S.phases = {}; S.phaseKeys = phaseDefs.map(p => p.key);
+  phaseDefs.forEach(p => {
+    S.phases[p.key] = { state:'idle', totalMs:0, startedAt:null, label:p.label, icon:p.icon };
+  });
+
+  document.getElementById('tic-type').textContent = selType;
+  document.getElementById('tic-name').textContent = name;
+  document.getElementById('tic-wo').textContent   = 'WO# ' + wo;
+  document.getElementById('tic-qty').textContent  = '×' + qty;
+  document.getElementById('qty-num').textContent  = qty;
+
+  renderPhaseRows();
+  ['st-total','st-avg','st-pause'].forEach(id => document.getElementById(id).textContent = '00:00:00');
+  document.getElementById('st-phase').textContent = '—';
+  document.getElementById('phase-overall').textContent = 'Total: 00:00:00';
+
+  // Show task clock
+  const tcBox = document.getElementById('task-clock-box');
+  if (tcBox) tcBox.style.display = 'block';
+  const startEET = new Date(S.task.startTime).toLocaleTimeString('et-EE',{timeZone:'Europe/Tallinn',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const tcStart = document.getElementById('tc-start');
+  if (tcStart) tcStart.textContent = startEET;
+
+  clearInterval(S.tickTimer);
+  S.tickTimer = setInterval(tickActive, 500);
+  showScreen('screen-active');
+}
+
+// ══════════════════════════════════════════════
+// PHASE ROWS
+// ══════════════════════════════════════════════
+function renderPhaseRows() {
+  const c = document.getElementById('phases-list');
+  c.innerHTML = '';
+  S.phaseKeys.forEach(key => {
+    const ph = S.phases[key];
+    const row = document.createElement('div');
+    row.id = 'pr-'+key; row.className = 'phase-row';
+    row.innerHTML = `
+      <div class="ph-icon-wrap">${ph.icon}</div>
+      <div class="ph-info">
+        <div class="ph-name">${ph.label}</div>
+        <div class="ph-status-text" id="pst-${key}">Ready to start</div>
+      </div>
+      <div class="ph-timer-wrap"><span class="ph-timer" id="pt-${key}">00:00:00</span></div>
+      <div class="ph-actions" id="pa-${key}">
+        <button class="ph-btn ph-btn-start" onclick="startPhase('${key}')">▶ Start</button>
+      </div>`;
+    c.appendChild(row);
+  });
+}
+
+// ══════════════════════════════════════════════
+// PHASE LOGIC
+// ══════════════════════════════════════════════
+function startPhase(key) {
+  if (S.isPaused) { toast('Resume work first'); return; }
+  const ph = S.phases[key];
+  if (ph.state === 'running') return;
+
+  // ONE PHASE AT A TIME — auto-stop any currently running phase first
+  S.phaseKeys.forEach(k => {
+    if (k !== key && S.phases[k].state === 'running') {
+      stopPhase(k);
+    }
+  });
+
+  ph.state = 'running'; ph.startedAt = Date.now();
+  document.getElementById('pr-'+key).className = 'phase-row ph-active';
+  document.getElementById('pst-'+key).textContent = '● Running';
+  document.getElementById('pa-'+key).innerHTML =
+    `<button class="ph-btn ph-btn-stop" onclick="stopPhase('${key}')">⏹ Stop</button>`;
+  document.getElementById('st-phase').textContent = ph.label;
+}
+
+function stopPhase(key) {
+  const ph = S.phases[key];
+  if (ph.state !== 'running') return;
+  ph.totalMs += Date.now() - ph.startedAt;
+  ph.startedAt = null; ph.state = 'stopped';
+  document.getElementById('pt-'+key).textContent  = fmt(ph.totalMs);
+  document.getElementById('pr-'+key).className    = 'phase-row ph-done';
+  document.getElementById('pst-'+key).textContent = '✓ Done — ' + fmt(ph.totalMs);
+  document.getElementById('pa-'+key).innerHTML =
+    `<span class="ph-btn-done-badge">Done</span>
+     <button class="ph-btn-restart" onclick="restartPhase('${key}')">↺</button>`;
+  if (document.getElementById('st-phase').textContent === ph.label)
+    document.getElementById('st-phase').textContent = '—';
+}
+
+function restartPhase(key) {
+  if (S.isPaused) { toast('Resume work first'); return; }
+
+  // ONE PHASE AT A TIME — auto-stop any currently running phase first
+  S.phaseKeys.forEach(k => {
+    if (k !== key && S.phases[k].state === 'running') {
+      stopPhase(k);
+    }
+  });
+
+  const ph = S.phases[key];
+  ph.state = 'running'; ph.startedAt = Date.now();
+  document.getElementById('pr-'+key).className = 'phase-row ph-active';
+  document.getElementById('pst-'+key).textContent = '● Running (continued)';
+  document.getElementById('pa-'+key).innerHTML =
+    `<button class="ph-btn ph-btn-stop" onclick="stopPhase('${key}')">⏹ Stop</button>`;
+  document.getElementById('st-phase').textContent = ph.label;
+}
+
+function tickActive() {
+  if (S.isPaused) return;
+  const now = Date.now();
+  let overall = 0;
+  S.phaseKeys.forEach(key => {
+    const ph = S.phases[key];
+    const live = ph.state === 'running' ? ph.totalMs + (now - ph.startedAt) : ph.totalMs;
+    overall += live;
+    if (ph.state === 'running') document.getElementById('pt-'+key).textContent = fmt(live);
+  });
+  const qty = parseInt(document.getElementById('qty-num').textContent) || 1;
+  const pauseMs = S.totalPausedMs + (S.isPaused && S.pauseStart ? now - S.pauseStart : 0);
+  document.getElementById('phase-overall').textContent = 'Total: ' + fmt(overall);
+  document.getElementById('st-total').textContent = fmt(overall);
+  document.getElementById('st-avg').textContent   = fmt(overall / qty);
+  document.getElementById('st-pause').textContent = fmt(pauseMs);
+  updateActiveTimeline();
+
+  // Live task clock
+  const nowEET = new Date().toLocaleTimeString('et-EE',{timeZone:'Europe/Tallinn',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const tcNowVal = document.getElementById('tc-now-val');
+  if (tcNowVal) tcNowVal.textContent = nowEET;
+  // Elapsed = wall clock time since task started (including pauses shown separately)
+  if (S.task && S.task.startTime) {
+    const wallElapsed = Date.now() - S.task.startTime;
+    const tcEl = document.getElementById('tc-elapsed');
+    if (tcEl) tcEl.textContent = fmt(wallElapsed);
+  }
+}
+
+// ══════════════════════════════════════════════
+// QTY
+// ══════════════════════════════════════════════
+function adjQty(d) {
+  const el = document.getElementById('qty-num');
+  let v = parseInt(el.textContent) + d; if (v < 1) v = 1;
+  el.textContent = v; if (S.task) S.task.qty = v;
+}
+
+// ══════════════════════════════════════════════
+// SUBMIT TASK — with warning sheet
+// ══════════════════════════════════════════════
+function triggerSubmitTask() {
+  if (!S.task) return;
+  // Snapshot current totals for the info row
+  let totalNow = 0;
+  S.phaseKeys.forEach(key => {
+    const ph = S.phases[key];
+    totalNow += ph.state === 'running' ? ph.totalMs + (Date.now() - ph.startedAt) : ph.totalMs;
+  });
+  const qty = parseInt(document.getElementById('qty-num').textContent) || 1;
+  const runningPhases = S.phaseKeys.filter(k => S.phases[k].state === 'running');
+
+  const infoRow = document.getElementById('submit-info-row');
+  infoRow.innerHTML = `
+    <div class="sheet-chip">📋 ${S.task.type}</div>
+    <div class="sheet-chip">📝 ${S.task.name}</div>
+    <div class="sheet-chip">🔢 ×${qty} units</div>
+    <div class="sheet-chip">⏱ ${fmt(totalNow)}</div>
+    ${runningPhases.length ? `<div class="sheet-chip" style="border-color:var(--accent2);color:var(--accent2);">⚡ ${runningPhases.length} phase(s) still running — will be auto-stopped</div>` : ''}`;
+  openOverlay('ov-submit');
+}
+
+function doSubmitTask() {
+  closeOverlay('ov-submit');
+  if (!S.task) return;
+  S.phaseKeys.forEach(key => { if (S.phases[key].state === 'running') stopPhase(key); });
+  clearInterval(S.tickTimer);
+
+  const qty = parseInt(document.getElementById('qty-num').textContent) || 1;
+  const snap = {}; let total = 0;
+  S.phaseKeys.forEach(key => { snap[key] = S.phases[key].totalMs; total += snap[key]; });
+
+  const record = {
+    ...S.task, qty,
+    phaseKeys:   [...S.phaseKeys],
+    phaseTimes:  snap,
+    phaseLabels: Object.fromEntries(S.phaseKeys.map(k => [k, S.phases[k].label])),
+    phaseIcons:  Object.fromEntries(S.phaseKeys.map(k => [k, S.phases[k].icon])),
+    totalMs: total, avgMs: total / qty, endTime: Date.now(),
+  };
+  S.completedTasks.push(record);
+  S.task = null;
+  saveSession();
+  const tcBox2 = document.getElementById('task-clock-box');
+  if (tcBox2) tcBox2.style.display = 'none';
+  toast('✓ Task submitted!');
+  showScreen('screen-task');
+  resetTaskForm();
+}
+
+// ══════════════════════════════════════════════
+// END SHIFT — with warning sheet
+// ══════════════════════════════════════════════
+function triggerEndShift() {
+  const hasTask = S.task !== null;
+  const sub = hasTask
+    ? `You still have an active task running. It will be auto-submitted before ending.`
+    : `You have completed ${S.completedTasks.length} task(s) this shift.`;
+  document.getElementById('end-shift-sub').textContent = sub;
+
+  const infoRow = document.getElementById('end-shift-info-row');
+  const shiftMs = Date.now() - S.shiftStart - S.totalPausedMs;
+  const units   = S.completedTasks.reduce((a,t) => a + t.qty, 0) + (hasTask ? parseInt(document.getElementById('qty-num')?.textContent||'0') : 0);
+  infoRow.innerHTML = `
+    <div class="sheet-chip">👤 ${S.workerName}</div>
+    <div class="sheet-chip">🕐 ${fmt(shiftMs)}</div>
+    <div class="sheet-chip">✓ ${S.completedTasks.length} task(s)</div>
+    <div class="sheet-chip">📦 ${units} unit(s)</div>
+    ${hasTask ? `<div class="sheet-chip" style="border-color:var(--accent2);color:var(--accent2);">⚡ Active task will be submitted</div>` : ''}`;
+  openOverlay('ov-end-shift');
+}
+
+function doEndShift() {
+  closeOverlay('ov-end-shift');
+  if (S.task) {
+    S.phaseKeys.forEach(key => { if (S.phases[key].state === 'running') stopPhase(key); });
+    clearInterval(S.tickTimer);
+    const qty = parseInt(document.getElementById('qty-num')?.textContent) || 1;
+    const snap = {}; let total = 0;
+    S.phaseKeys.forEach(key => { snap[key] = S.phases[key].totalMs; total += snap[key]; });
+    S.completedTasks.push({
+      ...S.task, qty, phaseKeys:[...S.phaseKeys],
+      phaseTimes:snap,
+      phaseLabels:Object.fromEntries(S.phaseKeys.map(k=>[k,S.phases[k].label])),
+      phaseIcons:Object.fromEntries(S.phaseKeys.map(k=>[k,S.phases[k].icon])),
+      totalMs:total, avgMs:total/qty, endTime:Date.now(),
+    });
+    S.task = null;
+  }
+  clearInterval(S.shiftTimer); clearInterval(S.tickTimer);
+  buildEndScreen();
+}
+
+function buildEndScreen() {
+  const shiftMs  = Date.now() - S.shiftStart - S.totalPausedMs;
+  const totUnits = S.completedTasks.reduce((a,t) => a+t.qty, 0);
+  document.getElementById('end-meta').textContent   = S.workerName + ' · ' + S.shiftType + ' · ' + new Date(S.shiftStart).toLocaleDateString();
+  document.getElementById('sum-dur').textContent    = fmt(shiftMs);
+  document.getElementById('sum-tasks').textContent  = S.completedTasks.length;
+  document.getElementById('sum-units').textContent  = totUnits;
+  document.getElementById('sum-break').textContent  = fmt(S.totalPausedMs);
+
+  const list = document.getElementById('end-list');
+  list.innerHTML = '';
+  if (!S.completedTasks.length) {
+    list.innerHTML = '<div class="no-data">No tasks recorded this shift</div>';
+  } else {
+    S.completedTasks.forEach((t, i) => {
+      const d = document.createElement('div');
+      d.className = 'task-summary-item';
+      d.innerHTML = `
+        <div class="tsi-header" id="tsi-h-${i}" onclick="toggleTask(${i})">
+          <div class="tsi-icon">${TYPE_ICONS[t.type]||'🔧'}</div>
+          <div class="tsi-info">
+            <div class="tsi-name">${t.name}</div>
+            <div class="tsi-meta">${t.type} · ${t.wo} · ×${t.qty} units</div>
+          </div>
+          <div class="tsi-right">
+            <div class="tsi-total">${fmt(t.totalMs)}</div>
+            <div class="tsi-chevron">▼</div>
+          </div>
+        </div>
+        <div class="tsi-body" id="tsi-b-${i}">
+          <div id="tsi-timeline-${i}"></div>
+          <div class="tsi-avg" style="margin-top:12px;">
+            <div class="tsi-avg-lbl">Avg time / unit</div>
+            <div class="tsi-avg-val">${fmt(t.avgMs)}</div>
+          </div>
+        </div>`;
+      list.appendChild(d);
+      renderTimeline('tsi-timeline-'+i, t.phaseKeys, t.phaseLabels, t.phaseIcons, t.phaseTimes, t.totalMs);
+    });
+  }
+  saveHistory();
+  clearSession();
+  showScreen('screen-end');
+}
+
+function toggleTask(i) {
+  const h = document.getElementById('tsi-h-'+i);
+  const b = document.getElementById('tsi-b-'+i);
+  const open = b.classList.toggle('open');
+  h.classList.toggle('open', open);
+}
+
+// ══════════════════════════════════════════════
+// PAUSE / RESUME
+// ══════════════════════════════════════════════
+function openPause() {
+  document.querySelectorAll('.pause-opt').forEach(b => b.classList.remove('sel'));
+  openOverlay('ov-pause');
+}
+
+function doPause(btn, icon, label) {
+  document.querySelectorAll('.pause-opt').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  S.isPaused = true; S.pauseStart = Date.now(); S.pauseReason = icon + ' ' + label;
+  S.phaseKeys.forEach(key => {
+    const ph = S.phases[key];
+    if (ph.state === 'running' && ph.startedAt) {
+      ph.totalMs += Date.now() - ph.startedAt; ph.startedAt = null;
+    }
+  });
+  const msg = icon + ' ' + label;
+  document.getElementById('pb-reason-task').textContent   = msg;
+  document.getElementById('pb-reason-active').textContent = msg;
+  document.getElementById('pb-task').classList.add('visible');
+  document.getElementById('pb-active').classList.add('visible');
+  document.getElementById('pbtn-task').classList.add('is-paused');
+  document.getElementById('pbtn-active').classList.add('is-paused');
+  closeOverlay('ov-pause');
+  toast('Paused — ' + label);
+}
+
+function resumeWork() {
+  if (!S.isPaused) return;
+  S.totalPausedMs += Date.now() - S.pauseStart;
+  S.isPaused = false; S.pauseStart = null;
+  S.phaseKeys.forEach(key => {
+    if (S.phases[key].state === 'running') S.phases[key].startedAt = Date.now();
+  });
+  document.getElementById('pb-task').classList.remove('visible');
+  document.getElementById('pb-active').classList.remove('visible');
+  document.getElementById('pbtn-task').classList.remove('is-paused');
+  document.getElementById('pbtn-active').classList.remove('is-paused');
+  toast('▶ Resumed');
+}
+
+// ══════════════════════════════════════════════
+// HISTORY — Dual tabs
+// ══════════════════════════════════════════════
+function saveHistory() {
+  const rec = {
+    id: Date.now(), worker: S.workerName, shiftType: S.shiftType,
+    date: new Date(S.shiftStart).toLocaleDateString('et-EE', {timeZone:'Europe/Tallinn'}),
+    time: new Date(S.shiftStart).toLocaleTimeString('et-EE', {timeZone:'Europe/Tallinn', hour:'2-digit', minute:'2-digit', second:'2-digit'}),
+    shiftMs: Date.now() - S.shiftStart - S.totalPausedMs,
+    pauseMs: S.totalPausedMs, tasks: S.completedTasks,
+  };
+  const h = JSON.parse(localStorage.getItem('sc_h5') || '[]');
+  h.unshift(rec); localStorage.setItem('sc_h5', JSON.stringify(h.slice(0,200)));
+
+  // Also save individual task records
+  const allTasks = JSON.parse(localStorage.getItem('sc_tasks5') || '[]');
+  S.completedTasks.forEach(t => {
+    allTasks.unshift({ ...t, worker: S.workerName, shiftType: S.shiftType,
+      dateStr: new Date(t.endTime || Date.now()).toLocaleDateString('et-EE', {timeZone:'Europe/Tallinn'}),
+      timeStr: new Date(t.endTime || Date.now()).toLocaleTimeString('et-EE', {timeZone:'Europe/Tallinn', hour:'2-digit', minute:'2-digit', second:'2-digit'}) });
+  });
+  localStorage.setItem('sc_tasks5', JSON.stringify(allTasks.slice(0,500)));
+}
+
+function openHistory() {
+  S._historyReturn = 'screen-welcome';
+  switchTab('shift');
+  showScreen('screen-history');
+}
+
+function openHistoryFromShift() {
+  // remember which screen to return to
+  S._historyReturn = S.task ? 'screen-active' : 'screen-task';
+  switchTab('shift');
+  showScreen('screen-history');
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-shift-btn').classList.toggle('active', tab==='shift');
+  document.getElementById('tab-task-btn').classList.toggle('active', tab==='task');
+  document.getElementById('tab-shift').classList.toggle('active', tab==='shift');
+  document.getElementById('tab-task').classList.toggle('active', tab==='task');
+  if (tab === 'shift') renderShiftHistory();
+  else renderTaskHistory();
+}
+
+/* ── STARSHIP SVG ── */
+function starshipSVG() {
+  // 3 side-view wheels, compact proportional body
+  function wheel(cx, cy, r, dur, begin) {
+    return `<g>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="#666" stroke="#444" stroke-width="0.8"/>
+      <line x1="${cx}" y1="${cy-r+0.5}" x2="${cx}" y2="${cy+r-0.5}" stroke="#999" stroke-width="1.4">
+        <animateTransform attributeName="transform" type="rotate"
+          from="0 ${cx} ${cy}" to="360 ${cx} ${cy}"
+          dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/>
+      </line>
+      <line x1="${cx-r+0.5}" y1="${cy}" x2="${cx+r-0.5}" y2="${cy}" stroke="#999" stroke-width="1.4">
+        <animateTransform attributeName="transform" type="rotate"
+          from="0 ${cx} ${cy}" to="360 ${cx} ${cy}"
+          dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/>
+      </line>
+      <circle cx="${cx}" cy="${cy}" r="${r*0.28}" fill="#888"/>
+    </g>`;
+  }
+
+  const wr = 7;
+  const wy = 46;
+  // 3 wheels — front, mid, rear
+  const wxs = [14, 32, 50];
+  const wheels = wxs.map((x, i) => wheel(x, wy, wr, 1.6, i * 0)).join('');
+
+  return `<div class="starship-wrap">
+    <div class="starship-track"></div>
+    <svg class="starship-bot" width="66" height="54" viewBox="0 0 66 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- FLAG GROUP -->
+      <g class="starship-flag-grp">
+        <line x1="40" y1="1" x2="40" y2="18" stroke="#aaa" stroke-width="1.1"/>
+        <polygon points="40,1 52,5 40,10" fill="var(--accent2)" opacity="0.95"/>
+      </g>
+
+      <!-- BODY -->
+      <rect x="4" y="18" width="58" height="20" rx="4" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+
+      <!-- LID TOP PANEL -->
+      <rect x="9" y="18" width="48" height="5" rx="2.5" fill="var(--surface2)" stroke="var(--border)" stroke-width="0.7"/>
+
+      <!-- FRONT CAMERA -->
+      <rect x="4" y="24" width="4" height="7" rx="1.2" fill="#222" stroke="#444" stroke-width="0.5"/>
+      <circle cx="6" cy="27.5" r="1.6" fill="#111"/>
+      <circle cx="6" cy="27.5" r="0.6" fill="#1a6ecc" opacity="0.9"/>
+
+      <!-- STATUS LIGHT -->
+      <circle cx="15" cy="29" r="1.5" fill="var(--accent3)" opacity="0.85"/>
+      <circle cx="20" cy="29" r="1.5" fill="var(--accent2)" opacity="0.7"/>
+
+      <!-- SC BADGE -->
+      <rect x="28" y="24" width="12" height="9" rx="2" fill="var(--accent)" opacity="0.12" stroke="var(--accent)" stroke-width="0.7"/>
+      <text x="34" y="31" font-size="5.5" fill="var(--accent)" text-anchor="middle" font-weight="bold" font-family="monospace">SC</text>
+
+      <!-- REAR LIGHT -->
+      <rect x="59" y="25" width="3" height="6" rx="1" fill="var(--accent)" opacity="0.5"/>
+
+      <!-- AXLE -->
+      <rect x="8" y="38" width="50" height="2.5" rx="1" fill="var(--border)" opacity="0.6"/>
+
+      <!-- 3 WHEELS -->
+      ${wheels}
+
+    </svg>
+  </div>`;
+}
+
+function buildDetailedShiftBody(rec) {
+  const colors = ['#e8430a','#1a5fa8','#2a7d4f','#f5a623','#9b59b6','#e74c3c','#16a085','#d35400'];
+  const units = rec.tasks.reduce((a,t) => a+t.qty, 0);
+
+  if (!rec.tasks.length) {
+    return `<div style="font-size:12px;color:var(--text3);padding:12px 0;text-align:center;">No tasks recorded this shift</div>`;
+  }
+
+  const taskBlocks = rec.tasks.map((t, ti) => {
+    const startTime = t.startTime ? new Date(t.startTime).toLocaleTimeString('et-EE',{timeZone:'Europe/Tallinn',hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
+    const endTime   = t.endTime   ? new Date(t.endTime).toLocaleTimeString('et-EE',{timeZone:'Europe/Tallinn',hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
+
+    const phases = (t.phaseKeys||[]).map((k, pi) => {
+      const ms    = (t.phaseTimes||{})[k] || 0;
+      const pct   = t.totalMs > 0 ? Math.round(ms / t.totalMs * 100) : 0;
+      const icon  = (t.phaseIcons||{})[k] || '⚙️';
+      const label = (t.phaseLabels||{})[k] || k;
+      const color = colors[pi % colors.length];
+      return `<div class="det-phase-step">
+        <div class="det-phase-icon">${icon}</div>
+        <div class="det-phase-info">
+          <div class="det-phase-name">${label}</div>
+          <div class="det-phase-bar-wrap">
+            <div class="det-phase-bar" style="width:${pct}%;background:${color};"></div>
+          </div>
+        </div>
+        <div class="det-phase-time">${fmt(ms)}</div>
+        <div class="det-phase-pct">${pct}%</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="det-task-block">
+      <div class="det-task-header">
+        <div>
+          <div class="det-task-name">${TYPE_ICONS[t.type]||'🔧'} ${t.name}</div>
+          <div class="det-task-type">${t.type} · ${t.wo} · ×${t.qty} units</div>
+        </div>
+        <div class="det-task-times">
+          <div class="det-task-total">${fmt(t.totalMs)}</div>
+          <div class="det-task-stamp">▶ ${startTime} → ⏹ ${endTime}</div>
+        </div>
+      </div>
+      <div class="det-phase-list">${phases}</div>
+    </div>`;
+  }).join('');
+
+  const footer = `<div class="det-shift-footer">
+    <div class="det-sf-item"><div class="det-sf-lbl">Shift Time</div><div class="det-sf-val">${fmt(rec.shiftMs)}</div></div>
+    <div class="det-sf-item"><div class="det-sf-lbl">Tasks</div><div class="det-sf-val">${rec.tasks.length}</div></div>
+    <div class="det-sf-item"><div class="det-sf-lbl">Units</div><div class="det-sf-val">${units}</div></div>
+    <div class="det-sf-item"><div class="det-sf-lbl">Break</div><div class="det-sf-val">${fmt(rec.pauseMs)}</div></div>
+  </div>`;
+
+  return `<div class="det-timeline">${taskBlocks}${footer}</div>`;
+}
+
+function renderShiftHistory() {
+  const h = JSON.parse(localStorage.getItem('sc_h5') || '[]');
+  const c = document.getElementById('tab-shift');
+  c.innerHTML = '';
+  if (!h.length) {
+    c.innerHTML = starshipSVG() + '<div class="no-data">No shift history yet<br/><span style="font-size:11px;margin-top:4px;display:block;">Complete a shift to see it here</span></div>';
+    return;
+  }
+  // Starship at top
+  c.innerHTML = starshipSVG();
+  h.forEach((rec, i) => {
+    const units = rec.tasks.reduce((a,t) => a+t.qty, 0);
+    const d = document.createElement('div');
+    d.className = 'shift-hcard';
+    d.innerHTML = `
+      <div class="shc-header" id="shc-h-${i}" onclick="toggleShift(${i})">
+        <div class="shc-info">
+          <div class="shc-name">👤 ${rec.worker}</div>
+          <div class="shc-meta">${rec.date} · ${rec.time} · ${rec.shiftType}</div>
+          <div class="shc-chips">
+            <div class="shc-chip">🕐 ${fmt(rec.shiftMs)}</div>
+            <div class="shc-chip">✓ ${rec.tasks.length} tasks</div>
+            <div class="shc-chip">📦 ${units} units</div>
+            <div class="shc-chip">☕ ${fmt(rec.pauseMs)}</div>
+          </div>
+        </div>
+        <div class="shc-chevron">▼</div>
+      </div>
+      <div class="shc-body" id="shc-b-${i}"></div>`;
+    c.appendChild(d);
+    // pre-render body
+    document.getElementById('shc-b-'+i).innerHTML = buildDetailedShiftBody(rec);
+  });
+}
+
+function toggleShift(i) {
+  const h = document.getElementById('shc-h-'+i);
+  const b = document.getElementById('shc-b-'+i);
+  const open = b.classList.toggle('open');
+  h.classList.toggle('open', open);
+}
+
+function renderTaskHistory() {
+  const tasks = JSON.parse(localStorage.getItem('sc_tasks5') || '[]');
+  const c = document.getElementById('tab-task');
+  c.innerHTML = '';
+  if (!tasks.length) {
+    c.innerHTML = starshipSVG() + '<div class="no-data">No task history yet<br/><span style="font-size:11px;margin-top:4px;display:block;">Submit tasks to see them here</span></div>';
+    return;
+  }
+  c.innerHTML = starshipSVG();
+  const colors = ['#e8430a','#1a5fa8','#2a7d4f','#f5a623','#9b59b6','#e74c3c','#16a085','#d35400'];
+  tasks.forEach(t => {
+    const startTime = t.startTime ? new Date(t.startTime).toLocaleTimeString('et-EE',{timeZone:'Europe/Tallinn',hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
+    const endTime   = t.endTime   ? new Date(t.endTime).toLocaleTimeString('et-EE',{timeZone:'Europe/Tallinn',hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
+    const phases = (t.phaseKeys||[]).map((k, pi) => {
+      const ms    = (t.phaseTimes||{})[k] || 0;
+      const pct   = t.totalMs > 0 ? Math.round(ms / t.totalMs * 100) : 0;
+      const icon  = (t.phaseIcons||{})[k] || '⚙️';
+      const label = (t.phaseLabels||{})[k] || k;
+      const color = colors[pi % colors.length];
+      return `<div class="det-phase-step">
+        <div class="det-phase-icon">${icon}</div>
+        <div class="det-phase-info">
+          <div class="det-phase-name">${label}</div>
+          <div class="det-phase-bar-wrap">
+            <div class="det-phase-bar" style="width:${pct}%;background:${color};"></div>
+          </div>
+        </div>
+        <div class="det-phase-time">${fmt(ms)}</div>
+        <div class="det-phase-pct">${pct}%</div>
+      </div>`;
+    }).join('');
+
+    const d = document.createElement('div');
+    d.className = 'task-hcard';
+    d.innerHTML = `
+      <div class="thc-top">
+        <div>
+          <div class="thc-type">${t.type}</div>
+          <div class="thc-name">${TYPE_ICONS[t.type]||'🔧'} ${t.name}</div>
+        </div>
+        <div class="thc-right">
+          <div class="thc-total">${fmt(t.totalMs)}</div>
+          <div class="thc-date">${t.dateStr||''}</div>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin:4px 0;">
+        ${t.wo} · ×${t.qty} units · avg/unit: ${fmt(t.avgMs)} · 👤 ${t.worker||''}
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--accent3);margin-bottom:10px;">
+        ▶ Started: ${startTime} &nbsp;⏹ Ended: ${endTime}
+      </div>
+      <div class="det-phase-list">${phases}</div>`;
+    c.appendChild(d);
+  });
+}
+
+// ══════════════════════════════════════════════
+// NEW SHIFT
+// ══════════════════════════════════════════════
+function newShift() {
+  clearInterval(S.shiftTimer); clearInterval(S.tickTimer);
+  clearSession();
+  S = { workerName:'',shiftType:'',shiftStart:null,completedTasks:[],totalPausedMs:0,
+    task:null,phases:{},phaseKeys:[],isPaused:false,pauseStart:null,pauseReason:'',
+    shiftTimer:null,tickTimer:null };
+  selType = '';
+  document.getElementById('inp-name').value = '';
+  document.getElementById('clk-task').textContent = '00:00:00';
+  document.getElementById('clk-active').textContent = '00:00:00';
+  document.getElementById('pb-task').classList.remove('visible');
+  document.getElementById('pb-active').classList.remove('visible');
+  showScreen('screen-welcome');
+}
+
+// ══════════════════════════════════════════════
+// EXPORT CSV
+// ══════════════════════════════════════════════
+function exportCSV() {
+  if (!S.completedTasks.length) { toast('No tasks to export'); return; }
+  const allKeys = [...new Set(S.completedTasks.flatMap(t => t.phaseKeys))];
+  const hdrs = allKeys.map(k => {
+    const t = S.completedTasks.find(t => t.phaseKeys.includes(k));
+    return t ? t.phaseLabels[k] : k;
+  });
+  const rows = [
+    ['ShiftCore Export'],['Worker',S.workerName],['Shift',S.shiftType],
+    ['Date',new Date(S.shiftStart).toLocaleDateString()],
+    ['Shift Duration',fmt(Date.now()-S.shiftStart-S.totalPausedMs)],
+    ['Total Break',fmt(S.totalPausedMs)],[],
+    ['Task Type','Task Name','WO#','Qty',...hdrs,'Total Time','Avg Time/Unit'],
+  ];
+  S.completedTasks.forEach(t => {
+    rows.push([t.type,t.name,t.wo,t.qty,
+      ...allKeys.map(k => t.phaseTimes[k]!=null ? fmt(t.phaseTimes[k]) : '—'),
+      fmt(t.totalMs),fmt(t.avgMs)]);
+  });
+  const csv = rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a = Object.assign(document.createElement('a'),{
+    href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),
+    download:`ShiftCore_${S.workerName.replace(/ /g,'_')}_${new Date(S.shiftStart).toISOString().slice(0,10)}.csv`,
+  });
+  a.click(); toast('CSV downloaded!');
+}
+
+// ══════════════════════════════════════════════
+// EXPORT PDF
+// ══════════════════════════════════════════════
+function exportPDF() {
+  if (!S.completedTasks.length) { toast('No tasks to export'); return; }
+  const shiftMs  = Date.now()-S.shiftStart-S.totalPausedMs;
+  const totUnits = S.completedTasks.reduce((a,t)=>a+t.qty,0);
+  const dateStr  = new Date(S.shiftStart).toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const tRows = S.completedTasks.map(t=>{
+    const cells = t.phaseKeys.map(k=>`<td><b style="font-size:11px;">${t.phaseLabels[k]}</b><br/><span style="font-family:monospace">${fmt(t.phaseTimes[k])}</span></td>`).join('');
+    return `<tr><td>${t.type}</td><td>${t.name}</td><td>${t.wo}</td><td>${t.qty}</td>${cells}<td><b>${fmt(t.totalMs)}</b></td><td>${fmt(t.avgMs)}</td></tr>`;
+  }).join('');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ShiftCore Report</title>
+  <style>body{font-family:'Syne',sans-serif;margin:0;padding:36px;color:#1a1714;}
+  .hdr{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #e8430a;padding-bottom:16px;margin-bottom:24px;}
+  .logo{font-size:36px;font-weight:800;letter-spacing:-1px;}.logo span{color:#e8430a;}
+  .meta{text-align:right;font-size:12px;color:#666;line-height:1.8;}
+  .sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+  .sb{background:#f5f2ed;border-radius:8px;padding:14px;}
+  .sb .l{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#999;margin-bottom:4px;}
+  .sb .v{font-size:22px;font-weight:700;font-family:monospace;}
+  table{width:100%;border-collapse:collapse;font-size:12px;}
+  th{background:#1a1714;color:#fff;padding:9px 10px;text-align:left;}
+  td{padding:8px 10px;border-bottom:1px solid #e8e4de;vertical-align:top;}
+  tr:nth-child(even) td{background:#f9f7f4;}
+  .ft{margin-top:32px;border-top:1px solid #e8e4de;padding-top:12px;font-size:11px;color:#aaa;text-align:center;}
+  </style></head><body>
+  <div class="hdr"><div class="logo">Shift<span>Core</span></div><div class="meta">${dateStr}<br/>${S.workerName} · ${S.shiftType}</div></div>
+  <div class="sg">
+    <div class="sb"><div class="l">Duration</div><div class="v">${fmt(shiftMs)}</div></div>
+    <div class="sb"><div class="l">Tasks</div><div class="v">${S.completedTasks.length}</div></div>
+    <div class="sb"><div class="l">Units Built</div><div class="v">${totUnits}</div></div>
+    <div class="sb"><div class="l">Break Time</div><div class="v">${fmt(S.totalPausedMs)}</div></div>
+  </div>
+  <table><tr><th>Type</th><th>Task</th><th>WO#</th><th>Qty</th><th colspan="10">Phase Times</th><th>Total</th><th>Avg/Unit</th></tr>${tRows}</table>
+  <div class="ft">Generated by ShiftCore · ${new Date().toLocaleString()}</div></body></html>`;
+  const w = window.open('','_blank');
+  if(w){w.document.write(html);w.document.close();w.addEventListener('load',()=>w.print());toast('PDF ready!');}
+  else toast('Allow pop-ups for PDF export');
+}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function fmt(ms) {
+  if(!ms||ms<0)ms=0;
+  const s=Math.floor(ms/1000);
+  return[Math.floor(s/3600),Math.floor((s%3600)/60),s%60].map(n=>String(n).padStart(2,'0')).join(':');
+}
+let _tt;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2600);
+}
+
+
+// ══════════════════════════════════════════════
+// PHASE TIMELINE COLORS
+// ══════════════════════════════════════════════
+const PHASE_COLORS = [
+  '#e8430a','#1a5fa8','#2a7d4f','#f5a623','#9b59b6',
+  '#e74c3c','#16a085','#d35400','#2980b9','#27ae60',
+];
+
+function renderTimeline(containerId, phaseKeys, phaseLabels, phaseIcons, phaseTimes, totalMs) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (!totalMs || totalMs === 0) {
+    el.innerHTML = '<div class="ptl-bar"><div class="ptl-zero">No time recorded yet</div></div>';
+    return;
+  }
+  const segs = phaseKeys.map((k, i) => {
+    const ms = phaseTimes[k] || 0;
+    const pct = totalMs > 0 ? (ms / totalMs * 100) : 0;
+    const color = PHASE_COLORS[i % PHASE_COLORS.length];
+    return { k, ms, pct, color, label: phaseLabels[k], icon: phaseIcons[k] };
+  }).filter(s => s.ms > 0);
+
+  if (!segs.length) {
+    el.innerHTML = '<div class="ptl-bar"><div class="ptl-zero">No time recorded yet</div></div>';
+    return;
+  }
+
+  const barSegs = segs.map((s, i) => {
+    const isOnly = segs.length === 1;
+    const cls = isOnly ? 'ptl-seg only' : 'ptl-seg';
+    const label = s.pct > 12 ? fmt(s.ms) : '';
+    return `<div class="${cls}" style="flex:${s.pct};background:${s.color};" title="${s.label}: ${fmt(s.ms)}">${label}</div>`;
+  }).join('');
+
+  const legendItems = segs.map((s, i) =>
+    `<div class="ptl-leg-item">
+      <div class="ptl-leg-dot" style="background:${s.color};"></div>
+      <span>${s.icon} ${s.label}</span>
+      <span class="ptl-leg-time">${fmt(s.ms)}</span>
+    </div>`
+  ).join('');
+
+  el.innerHTML = `
+    <div class="ptl-bar">${barSegs}</div>
+    <div class="ptl-legend">${legendItems}</div>`;
+}
+
+// Update active task timeline every tick
+function updateActiveTimeline() {
+  const el = document.getElementById('active-timeline');
+  if (!el || !S.task) return;
+  const now = Date.now();
+  const snap = {};
+  let total = 0;
+  S.phaseKeys.forEach(key => {
+    const ph = S.phases[key];
+    snap[key] = ph.state === 'running' ? ph.totalMs + (now - ph.startedAt) : ph.totalMs;
+    total += snap[key];
+  });
+  const labels = Object.fromEntries(S.phaseKeys.map(k => [k, S.phases[k].label]));
+  const icons  = Object.fromEntries(S.phaseKeys.map(k => [k, S.phases[k].icon]));
+  renderTimeline('active-timeline', S.phaseKeys, labels, icons, snap, total);
+}
+
+// ON PAGE LOAD — restore session if one exists, else show welcome
+(function init(){
+  restoreSession();
+})();
+</script>
+</body>
+</html>
