@@ -383,6 +383,73 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .det-sf-lbl { font-family:var(--mono); font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text3); }
 .det-sf-val { font-family:var(--mono); font-size:13px; font-weight:600; color:var(--text); }
 
+
+/* ── CUSTOM PHASE BUILDER ── */
+.phase-builder { display:flex; flex-direction:column; gap:10px; margin-top:4px; }
+.phase-builder-row {
+  display:flex; align-items:center; gap:8px;
+  background:var(--surface2); border:1.5px solid var(--border);
+  border-radius:var(--radius-sm); padding:10px 12px;
+  transition: border-color 0.15s;
+}
+.phase-builder-row:hover { border-color:var(--accent3); }
+.phase-num {
+  font-family:var(--mono); font-size:12px; color:var(--text3);
+  min-width:22px; flex-shrink:0;
+}
+.phase-icon-pick {
+  font-size:20px; cursor:pointer; flex-shrink:0;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:6px; padding:4px 6px;
+  transition:all 0.15s;
+}
+.phase-icon-pick:hover { border-color:var(--accent); }
+.phase-name-inp {
+  flex:1; font-family:var(--font); font-size:14px; font-weight:600;
+  background:transparent; border:none; color:var(--text); outline:none;
+  min-width:0;
+}
+.phase-name-inp::placeholder { color:var(--text3); font-weight:400; }
+.phase-del-btn {
+  width:28px; height:28px; display:flex; align-items:center; justify-content:center;
+  background:transparent; border:1px solid transparent; border-radius:6px;
+  cursor:pointer; color:var(--text3); font-size:16px; flex-shrink:0;
+  transition:all 0.15s;
+}
+.phase-del-btn:hover { border-color:var(--red); color:var(--red); }
+.btn-add-phase {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  padding:11px; font-family:var(--font); font-size:13px; font-weight:700;
+  background:transparent; border:1.5px dashed var(--border);
+  border-radius:var(--radius-sm); cursor:pointer; color:var(--text3);
+  transition:all 0.15s;
+}
+.btn-add-phase:hover { border-color:var(--accent3); color:var(--accent3); }
+
+/* icon picker popup */
+.icon-picker-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(4px); z-index:600;
+  display:none; align-items:flex-end; justify-content:center;
+}
+.icon-picker-overlay.open { display:flex; }
+.icon-picker-sheet {
+  width:100%; max-width:480px; background:var(--surface);
+  border-radius:24px 24px 0 0; padding:20px 16px 32px;
+  animation:slideUp 0.2s ease;
+}
+.icon-picker-title { font-size:15px; font-weight:700; margin-bottom:14px; text-align:center; }
+.icon-picker-grid {
+  display:grid; grid-template-columns:repeat(7,1fr); gap:8px;
+  max-height:260px; overflow-y:auto;
+}
+.icon-opt {
+  font-size:24px; text-align:center; padding:8px 4px;
+  border-radius:8px; cursor:pointer; transition:background 0.12s;
+  border:2px solid transparent;
+}
+.icon-opt:hover { background:var(--surface2); border-color:var(--accent); }
+
 .no-data{text-align:center;padding:60px 20px;color:var(--text3);font-size:14px;}
 .sec-label{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
 
@@ -462,10 +529,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         <button class="type-btn" onclick="pickType(this,'CCC Assembly')"><div class="t-icon">🔧</div><div class="t-lbl">CCC Assembly</div></button>
         <button class="type-btn" onclick="pickType(this,'Outside Assembly')"><div class="t-icon">📦</div><div class="t-lbl">Outside Assembly</div></button>
       </div>
-      <div id="phase-preview" style="display:none;margin-top:12px;padding:12px 14px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Phases for this task</div>
-        <div id="phase-preview-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
+
+    <!-- PHASE BUILDER CARD -->
+    <div class="card" id="phase-builder-card" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div class="card-title" style="margin:0;">⚙️ &nbsp;Customize Phases</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text3);" id="phase-count-lbl">0 phases</div>
       </div>
+      <div class="phase-builder" id="phase-builder-list"></div>
+      <button class="btn-add-phase" style="margin-top:8px;" onclick="addCustomPhase()">＋ &nbsp;Add Phase</button>
     </div>
     <div class="card">
       <div class="card-title">Task Details</div>
@@ -625,6 +698,15 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div class="tab-panel" id="tab-task" style="flex-direction:column;"></div>
 </div>
 
+<!-- ICON PICKER -->
+<div class="icon-picker-overlay" id="icon-picker-overlay">
+  <div class="icon-picker-sheet">
+    <div class="icon-picker-title">Pick an Icon</div>
+    <div class="icon-picker-grid" id="icon-picker-grid"></div>
+    <button class="sheet-btn-cancel" style="margin-top:14px;" onclick="closeIconPicker()">Cancel</button>
+  </div>
+</div>
+
 <!-- ══════════════════════
   OVERLAY — PAUSE
 ══════════════════════ -->
@@ -687,7 +769,7 @@ const TASK_PHASES = {
   'CDE 2.8 Camera':   [{key:'setup',    icon:'⚙️',label:'Setup'},{key:'flashing',icon:'💾',label:'Flashing'},{key:'testing',icon:'🧪',label:'Testing'}],
   'CDE 3.6':          [{key:'setup',    icon:'⚙️',label:'Setup'},{key:'flashing',icon:'💾',label:'Flashing'},{key:'testing',icon:'🧪',label:'Testing'}],
   'Rear Electronics': [{key:'setup',icon:'⚙️',label:'Setup'},{key:'lid_lock_assy',icon:'🔒',label:'Lid Lock Assembly'},{key:'lid_lock_test',icon:'🔍',label:'Lid Lock Testing'},{key:'rsdu_flash',icon:'💾',label:'RSDU Flashing'},{key:'elmos_test',icon:'⚡',label:'ELMOS Testing'},{key:'msc_test',icon:'🧮',label:'MSC Testing'},{key:'assembly',icon:'🔧',label:'Assembly'},{key:'cable_loom',icon:'🔌',label:'Cable Loom Assembly'}],
-  'Front Electronics':[{key:'setup',icon:'⚙️',label:'Setup'},{key:'cutting',icon:'✂️',label:'Cutting'},{key:'assembly',icon:'🔧',label:'Assembly'}],
+  'Front Electronics':[{key:'setup',icon:'⚙️',label:'Setup'},{key:'cutting',icon:'✂️',label:'Cutting'},{key:'switchover',icon:'🔄',label:'Switchover Setup'},{key:'assembly',icon:'🔧',label:'Assembly'}],
   'CCC Assembly':     [{key:'setup',icon:'⚙️',label:'Setup'},{key:'assembly',icon:'🔧',label:'Assembly'},{key:'testing',icon:'🧪',label:'Testing'}],
   'Outside Assembly': [{key:'setup',icon:'⚙️',label:'Setup'},{key:'assembly',icon:'📦',label:'Assembly'}],
 };
@@ -851,24 +933,83 @@ function tickShift() {
 // ══════════════════════════════════════════════
 // TASK FORM
 // ══════════════════════════════════════════════
+// ── ICON PICKER ──
+const PHASE_ICONS_LIST = ['⚙️','🔧','🔌','🧪','💾','✂️','🔄','🔍','🔒','⚡','🧮','📦','🛠️','🔩','🔋','📋','🖥️','📡','🔦','🧲','⚗️','🔬','🏭','🚀','✅','🎯','⏱️','🔁'];
+let _iconPickerTarget = null;
+
+function openIconPicker(rowIdx) {
+  _iconPickerTarget = rowIdx;
+  const grid = document.getElementById('icon-picker-grid');
+  grid.innerHTML = PHASE_ICONS_LIST.map(ic =>
+    `<div class="icon-opt" onclick="selectIcon('${ic}')">${ic}</div>`
+  ).join('');
+  document.getElementById('icon-picker-overlay').classList.add('open');
+}
+function closeIconPicker() {
+  document.getElementById('icon-picker-overlay').classList.remove('open');
+  _iconPickerTarget = null;
+}
+function selectIcon(icon) {
+  if (_iconPickerTarget === null) return;
+  const btn = document.getElementById('phase-icon-btn-' + _iconPickerTarget);
+  if (btn) btn.textContent = icon;
+  closeIconPicker();
+}
+
+// ── CUSTOM PHASE BUILDER ──
+let customPhases = []; // [{icon, label}]
+
 function pickType(btn, type) {
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
   selType = type;
-  const phases = TASK_PHASES[type] || [];
-  const list = document.getElementById('phase-preview-list');
-  list.innerHTML = phases.map(p =>
-    `<span style="font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:5px;background:var(--surface);border:1px solid var(--border);color:var(--text2);">${p.icon} ${p.label}</span>`
-  ).join('');
-  document.getElementById('phase-preview').style.display = 'block';
+  // Load preset phases into builder
+  const presets = TASK_PHASES[type] || [];
+  customPhases = presets.map(p => ({ icon: p.icon, label: p.label }));
+  renderPhaseBuilder();
+  document.getElementById('phase-builder-card').style.display = 'block';
+}
+
+function renderPhaseBuilder() {
+  const list = document.getElementById('phase-builder-list');
+  list.innerHTML = '';
+  customPhases.forEach((ph, i) => {
+    const row = document.createElement('div');
+    row.className = 'phase-builder-row';
+    row.id = 'pbrow-' + i;
+    row.innerHTML = `
+      <div class="phase-num">${String(i+1).padStart(2,'0')}</div>
+      <button class="phase-icon-pick" id="phase-icon-btn-${i}" onclick="openIconPicker(${i})">${ph.icon}</button>
+      <input class="phase-name-inp" id="phase-name-inp-${i}" value="${ph.label}" placeholder="Phase name..." oninput="customPhases[${i}].label=this.value"/>
+      <button class="phase-del-btn" onclick="deletePhase(${i})" title="Remove">✕</button>`;
+    list.appendChild(row);
+  });
+  document.getElementById('phase-count-lbl').textContent = customPhases.length + ' phase' + (customPhases.length !== 1 ? 's' : '');
+}
+
+function addCustomPhase() {
+  customPhases.push({ icon: '⚙️', label: 'New Phase' });
+  renderPhaseBuilder();
+  // Focus the new name input
+  setTimeout(() => {
+    const inp = document.getElementById('phase-name-inp-' + (customPhases.length - 1));
+    if (inp) { inp.focus(); inp.select(); }
+  }, 50);
+}
+
+function deletePhase(i) {
+  if (customPhases.length <= 1) { toast('Need at least 1 phase'); return; }
+  customPhases.splice(i, 1);
+  renderPhaseBuilder();
 }
 
 function resetTaskForm() {
   selType = '';
+  customPhases = [];
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
   ['inp-task-name','inp-wo'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('inp-qty').value = '1';
-  document.getElementById('phase-preview').style.display = 'none';
+  document.getElementById('phase-builder-card').style.display = 'none';
 }
 
 function beginTask() {
@@ -885,7 +1026,15 @@ function beginTask() {
   if (!name)    { toast('Enter a task name'); return; }
   if (!wo)      { toast('Enter a Work Order number'); return; }
 
-  const phaseDefs = TASK_PHASES[selType];
+  // Read current phase builder values
+  const phaseDefs = customPhases.map((ph, i) => ({
+    key: 'phase_' + i,
+    icon: document.getElementById('phase-icon-btn-' + i)?.textContent || ph.icon,
+    label: document.getElementById('phase-name-inp-' + i)?.value.trim() || ph.label || ('Phase ' + (i+1)),
+  })).filter(p => p.label);
+
+  if (!phaseDefs.length) { toast('Add at least one phase'); return; }
+
   S.task = { name, wo, qty, type: selType, startTime: Date.now() };
   S.phases = {}; S.phaseKeys = phaseDefs.map(p => p.key);
   phaseDefs.forEach(p => {
