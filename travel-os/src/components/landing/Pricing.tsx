@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 
 const PLANS = [
   {
@@ -75,7 +79,7 @@ export default function Pricing() {
   return (
     <section id="pricing" className="py-20 sm:py-28 border-t border-gray-100 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <AnimatedSection className="text-center mb-12">
           <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
             Pricing
           </p>
@@ -87,16 +91,21 @@ export default function Pricing() {
             subscription — not from booking commissions. That alignment is the
             product.
           </p>
-        </div>
+        </AnimatedSection>
 
         <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
-          {PLANS.map((plan) => (
-            <div
+          {PLANS.map((plan, i) => (
+            <motion.div
               key={plan.name}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: plan.highlight ? -6 : -3, transition: { duration: 0.2 } }}
               className={`relative rounded-2xl border p-6 flex flex-col ${
                 plan.highlight
                   ? "border-violet-400 bg-gradient-to-b from-violet-50 to-pink-50 shadow-xl shadow-violet-100"
-                  : "border-gray-200 bg-white"
+                  : "border-gray-200 bg-white hover:border-violet-200 hover:shadow-md"
               }`}
             >
               {plan.badge && (
@@ -151,16 +160,16 @@ export default function Pricing() {
                 className={`block w-full rounded-xl py-3 text-center text-sm font-bold transition-all ${
                   plan.highlight
                     ? "bg-gradient-to-r from-violet-600 to-pink-500 text-white shadow-lg shadow-violet-200 hover:shadow-violet-300"
-                    : "border border-slate-700 bg-slate-800/50 text-slate-300 hover:border-slate-600 hover:text-gray-900"
+                    : "border border-gray-300 bg-white text-gray-700 hover:border-violet-400 hover:text-violet-700"
                 }`}
               >
                 {plan.cta}
               </Link>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        <p className="text-center text-xs text-slate-600 mt-8">
+        <p className="text-center text-xs text-gray-400 mt-8">
           All paid plans include a 14-day free trial. No card required for
           Free plan. Cancel anytime.
         </p>
