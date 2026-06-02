@@ -25,13 +25,13 @@ export default function CTA() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="#deals"
+                href="/auth/signup"
                 className="w-full sm:w-auto rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-10 py-4 text-base font-bold text-slate-950 shadow-xl shadow-emerald-500/30 transition-all hover:shadow-emerald-500/50 hover:scale-105"
               >
                 Get Started Free →
               </Link>
               <Link
-                href="#deals"
+                href="/auth/signup"
                 className="text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
               >
                 View live deals first

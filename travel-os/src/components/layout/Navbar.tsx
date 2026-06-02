@@ -5,10 +5,11 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { href: "/#deals", label: "Deals" },
-  { href: "/#calculator", label: "Cost Calculator" },
-  { href: "/#tourism-cards", label: "Tourism Cards" },
-  { href: "/#community", label: "Community" },
+  { href: "/deals", label: "Deals" },
+  { href: "/calculator", label: "Cost Calculator" },
+  { href: "/cashback", label: "Cashback" },
+  { href: "/community", label: "Community" },
+  { href: "/dashboard", label: "Dashboard" },
 ];
 
 export default function Navbar() {
@@ -44,13 +45,13 @@ export default function Navbar() {
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
             <Link
-              href="#deals"
+              href="/auth/signin"
               className="text-sm font-medium text-slate-400 hover:text-slate-100 transition-colors"
             >
               Sign in
             </Link>
             <Link
-              href="#deals"
+              href="/auth/signup"
               className="rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/40 hover:scale-105"
             >
               Get Started Free
@@ -101,13 +102,13 @@ export default function Navbar() {
             ))}
             <div className="pt-3 border-t border-slate-800 mt-2 flex flex-col gap-2">
               <Link
-                href="#deals"
+                href="/auth/signin"
                 className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-400 hover:text-slate-100 transition-colors"
               >
                 Sign in
               </Link>
               <Link
-                href="#deals"
+                href="/auth/signup"
                 className="rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 px-4 py-2.5 text-sm font-bold text-slate-950 text-center"
               >
                 Get Started Free

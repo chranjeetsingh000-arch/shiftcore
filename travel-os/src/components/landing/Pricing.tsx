@@ -147,7 +147,7 @@ export default function Pricing() {
               </ul>
 
               <Link
-                href="#deals"
+                href="/auth/signup"
                 className={`block w-full rounded-xl py-3 text-center text-sm font-bold transition-all ${
                   plan.highlight
                     ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40"

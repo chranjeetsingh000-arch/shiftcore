@@ -54,13 +54,13 @@ export default function Hero() {
           {/* CTA group */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
             <Link
-              href="#deals"
+              href="/deals"
               className="w-full sm:w-auto rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-8 py-4 text-base font-bold text-slate-950 shadow-xl shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 hover:scale-105"
             >
               Browse Live Deals →
             </Link>
             <Link
-              href="#calculator"
+              href="/calculator"
               className="w-full sm:w-auto rounded-xl border border-slate-700 bg-slate-800/50 px-8 py-4 text-base font-semibold text-slate-200 transition-all hover:border-slate-600 hover:bg-slate-800"
             >
               Calculate True Trip Cost
