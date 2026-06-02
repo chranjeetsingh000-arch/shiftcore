@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useUser } from "@/hooks/useUser";
 
 const NAV_LINKS = [
   { href: "/deals", label: "Deals" },
@@ -14,6 +15,7 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, signOut } = useUser();
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl">
@@ -44,18 +46,37 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
-            <Link
-              href="/auth/signin"
-              className="text-sm font-medium text-slate-400 hover:text-slate-100 transition-colors"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/40 hover:scale-105"
-            >
-              Get Started Free
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="text-sm font-medium text-slate-400 hover:text-slate-100 transition-colors"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={signOut}
+                  className="rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm font-semibold text-slate-300 hover:border-slate-600 hover:text-slate-100 transition-all"
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/auth/signin"
+                  className="text-sm font-medium text-slate-400 hover:text-slate-100 transition-colors"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/40 hover:scale-105"
+                >
+                  Get Started Free
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile hamburger */}

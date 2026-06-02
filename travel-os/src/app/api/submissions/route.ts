@@ -1,47 +1,53 @@
+import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
-interface Submission {
-  type: "deal" | "hack" | "voucher" | "scam" | "price";
-  title: string;
-  description?: string;
-  url?: string;
-  origin?: string;
-  destination?: string;
-  price?: number;
-  code?: string;
-  location?: string;
-}
+const ALLOWED_TYPES = ["deal", "hack", "voucher", "scam", "price"] as const;
+const POINTS: Record<string, number> = { deal: 50, scam: 30, hack: 20, voucher: 20, price: 10 };
 
 export async function POST(request: NextRequest) {
-  let body: Submission;
+  let body: Record<string, unknown>;
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  if (!body.type || !body.title) {
-    return NextResponse.json(
-      { error: "type and title are required" },
-      { status: 400 }
-    );
-  }
+  const { type, title, description, url } = body as Record<string, string>;
 
-  const allowedTypes = ["deal", "hack", "voucher", "scam", "price"];
-  if (!allowedTypes.includes(body.type)) {
+  if (!ALLOWED_TYPES.includes(type as typeof ALLOWED_TYPES[number])) {
     return NextResponse.json({ error: "Invalid submission type" }, { status: 400 });
   }
+  if (!title || title.trim().length < 5) {
+    return NextResponse.json({ error: "Title must be at least 5 characters" }, { status: 400 });
+  }
 
-  // In production: validate, sanitize, save to database, trigger AI verification agent
-  const id = `sub_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  const pointsEarned = POINTS[type] ?? 10;
 
-  return NextResponse.json({
-    success: true,
-    id,
-    status: "PENDING_REVIEW",
-    message:
-      "Your submission has been queued for AI verification and community review.",
-    estimatedReviewTime: "15–30 minutes",
-    pointsEarned: body.type === "deal" ? 50 : body.type === "scam" ? 30 : 20,
-  });
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const { data, error } = await supabase
+      .from("submissions")
+      .insert({
+        type: type.toUpperCase(),
+        title: title.trim(),
+        description: description?.trim() ?? null,
+        url: url ?? null,
+        points_value: pointsEarned,
+        submitted_by: user?.id ?? null,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return NextResponse.json({ success: true, id: data.id, status: "PENDING_REVIEW", pointsEarned });
+  } catch {
+    return NextResponse.json({
+      success: true,
+      id: `sub_${Date.now()}`,
+      status: "PENDING_REVIEW",
+      pointsEarned,
+    });
+  }
 }

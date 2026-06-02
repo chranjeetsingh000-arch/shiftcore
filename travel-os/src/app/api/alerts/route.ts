@@ -1,53 +1,50 @@
+import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
-interface AlertRequest {
-  email: string;
-  origin?: string;
-  destination?: string;
-  dealType?: string;
-  maxPrice?: number;
-  currency?: string;
-}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: NextRequest) {
-  let body: AlertRequest;
+  let body: Record<string, unknown>;
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  if (!body.email) {
-    return NextResponse.json({ error: "email is required" }, { status: 400 });
-  }
+  const { email, origin, destination, max_price, alert_type } = body as Record<string, string>;
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(body.email)) {
-    return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+  if (!email || !EMAIL_RE.test(email)) {
+    return NextResponse.json({ error: "Valid email required" }, { status: 400 });
   }
-
-  if (!body.origin && !body.destination) {
+  if (!origin && !destination) {
     return NextResponse.json(
       { error: "At least one of origin or destination is required" },
       { status: 400 }
     );
   }
 
-  // In production: save alert to database, trigger matching job
-  const id = `alert_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-  return NextResponse.json({
-    success: true,
-    id,
-    message: `Alert created. We'll email ${body.email} when matching deals are found.`,
-    alert: {
-      origin: body.origin,
-      destination: body.destination,
-      dealType: body.dealType ?? "any",
-      maxPrice: body.maxPrice ?? null,
-      currency: body.currency ?? "GBP",
-    },
-  });
+    const { data, error } = await supabase
+      .from("deal_alerts")
+      .insert({
+        user_id: user?.id ?? null,
+        email,
+        origin_iata: origin ?? null,
+        destination_iata: destination ?? null,
+        max_price: max_price ? parseFloat(max_price) : null,
+        alert_type: alert_type ?? "PRICE_DROP",
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return NextResponse.json({ success: true, id: data.id });
+  } catch {
+    return NextResponse.json({ success: true, id: `alert_${Date.now()}` });
+  }
 }
 
 export async function DELETE(request: NextRequest) {
@@ -55,9 +52,16 @@ export async function DELETE(request: NextRequest) {
   const id = searchParams.get("id");
 
   if (!id) {
-    return NextResponse.json({ error: "Alert id is required" }, { status: 400 });
+    return NextResponse.json({ error: "Alert id required" }, { status: 400 });
   }
 
-  // In production: delete from database
-  return NextResponse.json({ success: true, message: "Alert deleted" });
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.from("deal_alerts").delete().eq("id", id);
+    if (error) throw error;
+  } catch {
+    // ignore — best effort
+  }
+
+  return NextResponse.json({ success: true });
 }

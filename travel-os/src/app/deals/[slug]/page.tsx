@@ -3,6 +3,7 @@ import { DEALS } from "@/lib/data";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import DealStatusBadge from "@/components/deals/DealStatusBadge";
+import PriceHistoryChart from "@/components/deals/PriceHistoryChart";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
@@ -159,6 +160,13 @@ export default async function DealPage({
                 </p>
               </div>
             )}
+
+            {/* Price history chart */}
+            <PriceHistoryChart
+              dealId={deal.id}
+              currentPrice={deal.priceFrom}
+              currency={deal.currency}
+            />
 
             {/* Verification history */}
             <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 interface AuthCardProps {
   mode: "signin" | "signup";
@@ -14,8 +16,10 @@ export default function AuthCard({ mode }: AuthCardProps) {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const isSignup = mode === "signup";
+  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,9 +28,34 @@ export default function AuthCard({ mode }: AuthCardProps) {
     if (isSignup && !name) { setError("Please enter your name."); return; }
     if (password.length < 8) { setError("Password must be at least 8 characters."); return; }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    setDone(true);
+
+    try {
+      if (isSignup) {
+        const { error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { full_name: name } },
+        });
+        if (signUpError) throw signUpError;
+      } else {
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) throw signInError;
+        router.push("/dashboard");
+        router.refresh();
+      }
+      setDone(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Authentication failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOAuth = async (provider: "google" | "apple") => {
+    await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
+    });
   };
 
   if (done) {
@@ -74,10 +103,11 @@ export default function AuthCard({ mode }: AuthCardProps) {
 
       {/* Social sign in */}
       <div className="grid grid-cols-2 gap-3 mb-6">
-        {["Google", "Apple"].map((provider) => (
+        {(["Google", "Apple"] as const).map((provider) => (
           <button
             key={provider}
             type="button"
+            onClick={() => handleOAuth(provider.toLowerCase() as "google" | "apple")}
             className="flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-sm font-semibold text-slate-300 hover:border-slate-600 hover:bg-slate-800 transition-all"
           >
             <span>{provider === "Google" ? "🇬" : "🍎"}</span>
