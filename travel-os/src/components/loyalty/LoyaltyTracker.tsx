@@ -24,7 +24,7 @@ const PROGRAMS: LoyaltyProgram[] = [
     type: "airline",
     points: 42500,
     tier: "Silver",
-    tierColor: "text-slate-300",
+    tierColor: "text-gray-700",
     pointValue: 0.01,
     expiryDate: "Dec 2026",
     transferPartners: ["Iberia", "Aer Lingus", "Qatar Airways", "Finnair"],
@@ -61,7 +61,7 @@ const PROGRAMS: LoyaltyProgram[] = [
     type: "card",
     points: 34000,
     tier: "Preferred",
-    tierColor: "text-emerald-400",
+    tierColor: "text-violet-600",
     pointValue: 0.012,
     transferPartners: ["Avios", "Virgin Atlantic", "Hilton", "Marriott"],
   },
@@ -106,28 +106,28 @@ export default function LoyaltyTracker() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-black text-slate-100 mb-1">Loyalty Portfolio</h1>
-        <p className="text-slate-400">Track points across all your programs. Spot transfer bonuses before they expire.</p>
+        <h1 className="text-2xl font-black text-gray-900 mb-1">Loyalty Portfolio</h1>
+        <p className="text-gray-500">Track points across all your programs. Spot transfer bonuses before they expire.</p>
       </div>
 
       {/* Summary cards */}
       <div className="grid sm:grid-cols-3 gap-4 mb-8">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-          <p className="text-xs text-slate-500 mb-1">Total Portfolio Value</p>
-          <p className="text-3xl font-black text-slate-100">£{totalValue.toFixed(0)}</p>
-          <p className="text-xs text-slate-500 mt-1">across {programs.length} programs</p>
+        <div className="rounded-2xl border border-gray-200 bg-white p-5">
+          <p className="text-xs text-gray-400 mb-1">Total Portfolio Value</p>
+          <p className="text-3xl font-black text-gray-900">£{totalValue.toFixed(0)}</p>
+          <p className="text-xs text-gray-400 mt-1">across {programs.length} programs</p>
         </div>
-        <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5">
-          <p className="text-xs text-slate-500 mb-1">Active Transfer Bonuses</p>
-          <p className="text-3xl font-black text-emerald-400">
+        <div className="rounded-2xl border border-violet-200 bg-violet-50 p-5">
+          <p className="text-xs text-gray-400 mb-1">Active Transfer Bonuses</p>
+          <p className="text-3xl font-black text-violet-600">
             {programs.filter((p) => p.transferBonus).length}
           </p>
-          <p className="text-xs text-emerald-500/70 mt-1">
+          <p className="text-xs text-violet-500/70 mt-1">
             {programs.find((p) => p.transferBonus)?.transferBonus ?? "None active"}
           </p>
         </div>
         <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
-          <p className="text-xs text-slate-500 mb-1">Expiring Soon</p>
+          <p className="text-xs text-gray-400 mb-1">Expiring Soon</p>
           <p className="text-3xl font-black text-amber-400">
             {programs.filter((p) => p.expiryDate).length}
           </p>
@@ -144,8 +144,8 @@ export default function LoyaltyTracker() {
               onClick={() => setFilter(f)}
               className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
                 filter === f
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                  : "bg-slate-800 text-slate-400 border border-slate-700 hover:border-slate-600"
+                  ? "bg-emerald-500/20 text-violet-600 border border-violet-200"
+                  : "bg-gray-100 text-gray-500 border border-gray-300 hover:border-gray-400"
               }`}
             >
               {f === "all" ? "All programs" : TYPE_LABELS[f]}
@@ -154,7 +154,7 @@ export default function LoyaltyTracker() {
         </div>
         <button
           onClick={() => setAddOpen(true)}
-          className="rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-4 py-2 text-xs font-bold text-slate-950"
+          className="rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2 text-xs font-bold text-white"
         >
           + Add Program
         </button>
@@ -165,23 +165,23 @@ export default function LoyaltyTracker() {
         {filtered.map((prog) => (
           <div
             key={prog.id}
-            className={`rounded-2xl border bg-slate-900/60 p-5 cursor-pointer transition-all ${
+            className={`rounded-2xl border bg-white p-5 cursor-pointer transition-all ${
               selected === prog.id
                 ? "border-emerald-500/40"
-                : "border-slate-800 hover:border-slate-700"
+                : "border-gray-200 hover:border-gray-300"
             }`}
             onClick={() => setSelected(selected === prog.id ? null : prog.id)}
           >
             <div className="flex items-center gap-4">
-              <div className="h-10 w-10 rounded-xl bg-slate-800 flex items-center justify-center text-lg flex-shrink-0">
+              <div className="h-10 w-10 rounded-xl bg-gray-100 flex items-center justify-center text-lg flex-shrink-0">
                 {prog.icon}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-sm font-bold text-slate-200">{prog.name}</h3>
+                  <h3 className="text-sm font-bold text-gray-800">{prog.name}</h3>
                   <span className={`text-[10px] font-bold ${prog.tierColor}`}>{prog.tier}</span>
                   {prog.transferBonus && (
-                    <span className="rounded-full bg-emerald-500/15 text-emerald-400 px-2 py-0.5 text-[10px] font-bold">
+                    <span className="rounded-full bg-violet-50 text-violet-600 px-2 py-0.5 text-[10px] font-bold">
                       🔥 Bonus active
                     </span>
                   )}
@@ -191,55 +191,55 @@ export default function LoyaltyTracker() {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-gray-400 mt-0.5">
                   {TYPE_LABELS[prog.type]} · £{(prog.points * prog.pointValue).toFixed(0)} value
                 </p>
               </div>
               <div className="text-right flex-shrink-0">
-                <p className="text-xl font-black text-slate-100">
+                <p className="text-xl font-black text-gray-900">
                   {prog.points.toLocaleString()}
                 </p>
-                <p className="text-[10px] text-slate-500">points</p>
+                <p className="text-[10px] text-gray-400">points</p>
               </div>
             </div>
 
             {/* Expanded detail */}
             {selected === prog.id && (
-              <div className="mt-5 pt-5 border-t border-slate-800" onClick={(e) => e.stopPropagation()}>
+              <div className="mt-5 pt-5 border-t border-gray-200" onClick={(e) => e.stopPropagation()}>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs font-semibold text-slate-500 mb-2">Transfer Partners</p>
+                    <p className="text-xs font-semibold text-gray-400 mb-2">Transfer Partners</p>
                     <div className="flex flex-wrap gap-1.5">
                       {prog.transferPartners.map((tp) => (
-                        <span key={tp} className="rounded-lg bg-slate-800 border border-slate-700 px-2.5 py-1 text-xs text-slate-300">
+                        <span key={tp} className="rounded-lg bg-gray-100 border border-gray-300 px-2.5 py-1 text-xs text-gray-700">
                           {tp}
                         </span>
                       ))}
                     </div>
                     {prog.transferBonus && (
-                      <p className="text-xs text-emerald-400 mt-2">🔥 {prog.transferBonus}</p>
+                      <p className="text-xs text-violet-600 mt-2">🔥 {prog.transferBonus}</p>
                     )}
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-slate-500 mb-2">Update Balance</p>
+                    <p className="text-xs font-semibold text-gray-400 mb-2">Update Balance</p>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => updatePoints(prog.id, -1000)}
-                        className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-bold text-slate-400 hover:text-slate-200"
+                        className="rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 text-sm font-bold text-gray-500 hover:text-gray-800"
                       >
                         −1k
                       </button>
-                      <span className="flex-1 text-center text-sm font-black text-slate-200">
+                      <span className="flex-1 text-center text-sm font-black text-gray-800">
                         {prog.points.toLocaleString()}
                       </span>
                       <button
                         onClick={() => updatePoints(prog.id, 1000)}
-                        className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-bold text-slate-400 hover:text-slate-200"
+                        className="rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 text-sm font-bold text-gray-500 hover:text-gray-800"
                       >
                         +1k
                       </button>
                     </div>
-                    <p className="text-[11px] text-slate-600 mt-1 text-center">
+                    <p className="text-[11px] text-gray-400 mt-1 text-center">
                       Est. value: £{(prog.points * prog.pointValue).toFixed(0)} @ £{prog.pointValue}/pt
                     </p>
                   </div>
@@ -252,28 +252,28 @@ export default function LoyaltyTracker() {
 
       {/* Add program modal */}
       {addOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="rounded-2xl border border-slate-700 bg-slate-900 p-6 w-full max-w-md shadow-2xl">
-            <h2 className="text-lg font-black text-slate-100 mb-4">Add Loyalty Program</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/80 backdrop-blur-sm">
+          <div className="rounded-2xl border border-gray-300 bg-gray-50 p-6 w-full max-w-md shadow-2xl">
+            <h2 className="text-lg font-black text-gray-900 mb-4">Add Loyalty Program</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Program Name</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Program Name</label>
                 <input
                   type="text"
                   placeholder="e.g. Delta SkyMiles"
                   value={form.name}
                   onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Current Points Balance</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Current Points Balance</label>
                 <input
                   type="number"
                   placeholder="25000"
                   value={form.points}
                   onChange={(e) => setForm((f) => ({ ...f, points: e.target.value }))}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
                 />
               </div>
             </div>
@@ -288,7 +288,7 @@ export default function LoyaltyTracker() {
                       type: "airline",
                       points: parseInt(form.points),
                       tier: "Member",
-                      tierColor: "text-slate-400",
+                      tierColor: "text-gray-500",
                       pointValue: 0.008,
                       transferPartners: [],
                     }]);
@@ -296,13 +296,13 @@ export default function LoyaltyTracker() {
                     setAddOpen(false);
                   }
                 }}
-                className="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 py-3 text-sm font-bold text-slate-950"
+                className="flex-1 rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 py-3 text-sm font-bold text-white"
               >
                 Add Program
               </button>
               <button
                 onClick={() => setAddOpen(false)}
-                className="rounded-xl border border-slate-700 bg-slate-800 px-5 py-3 text-sm font-semibold text-slate-400"
+                className="rounded-xl border border-gray-300 bg-gray-100 px-5 py-3 text-sm font-semibold text-gray-500"
               >
                 Cancel
               </button>

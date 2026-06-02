@@ -73,16 +73,16 @@ const PLANS = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28 border-t border-slate-800/50">
+    <section id="pricing" className="py-20 sm:py-28 border-t border-gray-100 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold uppercase tracking-widest text-emerald-400 mb-3">
+          <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
             Pricing
           </p>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-100 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 mb-4">
             We earn when you save
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             Unlike every other travel platform, our revenue comes from your
             subscription — not from booking commissions. That alignment is the
             product.
@@ -95,41 +95,41 @@ export default function Pricing() {
               key={plan.name}
               className={`relative rounded-2xl border p-6 flex flex-col ${
                 plan.highlight
-                  ? "border-emerald-500/50 bg-gradient-to-b from-emerald-500/10 to-slate-900/60 shadow-xl shadow-emerald-500/10"
-                  : "border-slate-800 bg-slate-900/60"
+                  ? "border-violet-400 bg-gradient-to-b from-violet-50 to-pink-50 shadow-xl shadow-violet-100"
+                  : "border-gray-200 bg-white"
               }`}
             >
               {plan.badge && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 px-3 py-1 text-[10px] font-black text-slate-950">
+                  <span className="rounded-full bg-gradient-to-r from-violet-600 to-pink-500 px-3 py-1 text-[10px] font-black text-white">
                     {plan.badge}
                   </span>
                 </div>
               )}
 
               <div className="mb-5">
-                <h3 className="text-lg font-black text-slate-100 mb-1">
+                <h3 className="text-lg font-black text-gray-900 mb-1">
                   {plan.name}
                 </h3>
-                <p className="text-xs text-slate-400 mb-4">{plan.description}</p>
+                <p className="text-xs text-gray-500 mb-4">{plan.description}</p>
                 <div className="flex items-baseline gap-1">
                   {plan.price === 0 ? (
-                    <span className="text-3xl font-black text-slate-100">
+                    <span className="text-3xl font-black text-gray-900">
                       Free
                     </span>
                   ) : (
                     <>
-                      <span className="text-3xl font-black text-slate-100">
+                      <span className="text-3xl font-black text-gray-900">
                         £{plan.price}
                       </span>
-                      <span className="text-sm text-slate-500">
+                      <span className="text-sm text-gray-400">
                         /{plan.period}
                       </span>
                     </>
                   )}
                 </div>
                 {plan.savings && (
-                  <p className="text-[11px] text-emerald-400 mt-1">
+                  <p className="text-[11px] text-violet-600 mt-1">
                     {plan.savings}
                   </p>
                 )}
@@ -138,10 +138,10 @@ export default function Pricing() {
               <ul className="space-y-2.5 mb-6 flex-1">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2.5">
-                    <span className="text-emerald-500 text-sm mt-0.5 flex-shrink-0">
+                    <span className="text-violet-500 text-sm mt-0.5 flex-shrink-0">
                       ✓
                     </span>
-                    <span className="text-sm text-slate-400">{feature}</span>
+                    <span className="text-sm text-gray-500">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -150,8 +150,8 @@ export default function Pricing() {
                 href="/auth/signup"
                 className={`block w-full rounded-xl py-3 text-center text-sm font-bold transition-all ${
                   plan.highlight
-                    ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40"
-                    : "border border-slate-700 bg-slate-800/50 text-slate-300 hover:border-slate-600 hover:text-slate-100"
+                    ? "bg-gradient-to-r from-violet-600 to-pink-500 text-white shadow-lg shadow-violet-200 hover:shadow-violet-300"
+                    : "border border-slate-700 bg-slate-800/50 text-slate-300 hover:border-slate-600 hover:text-gray-900"
                 }`}
               >
                 {plan.cta}

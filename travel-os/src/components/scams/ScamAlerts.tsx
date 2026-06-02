@@ -105,11 +105,11 @@ const CATEGORY_COLORS: Record<ScamCategory, string> = {
   fake_deal: "bg-red-500/15 text-red-400 border-red-500/20",
   phishing: "bg-red-600/15 text-red-500 border-red-600/20",
   price_bait: "bg-amber-500/15 text-amber-400 border-amber-500/20",
-  dodgy_policy: "bg-slate-700/50 text-slate-400 border-slate-700",
+  dodgy_policy: "bg-slate-700/50 text-gray-500 border-gray-300",
 };
 
 const SEVERITY_COLORS = {
-  low: "bg-slate-700 text-slate-400",
+  low: "bg-slate-700 text-gray-500",
   medium: "bg-amber-500/20 text-amber-400",
   high: "bg-red-500/20 text-red-400",
 };
@@ -140,29 +140,29 @@ export default function ScamAlerts() {
           </span>
           Community-verified warnings
         </div>
-        <h1 className="text-2xl font-black text-slate-100 mb-2">Travel Scam Alerts</h1>
-        <p className="text-slate-400 max-w-2xl">
+        <h1 className="text-2xl font-black text-gray-900 mb-2">Travel Scam Alerts</h1>
+        <p className="text-gray-500 max-w-2xl">
           Real warnings from the Travel OS community. Hidden fees, fake deals, phishing attempts, and booking traps — all vetted and confirmed.
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-center">
-          <p className="text-2xl font-black text-slate-100">{SCAMS.length}</p>
-          <p className="text-xs text-slate-500">Active alerts</p>
+        <div className="rounded-xl border border-gray-200 bg-white p-4 text-center">
+          <p className="text-2xl font-black text-gray-900">{SCAMS.length}</p>
+          <p className="text-xs text-gray-400">Active alerts</p>
         </div>
         <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4 text-center">
           <p className="text-2xl font-black text-red-400">
             {SCAMS.filter((s) => s.severity === "high").length}
           </p>
-          <p className="text-xs text-slate-500">High severity</p>
+          <p className="text-xs text-gray-400">High severity</p>
         </div>
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-center">
-          <p className="text-2xl font-black text-slate-100">
+        <div className="rounded-xl border border-gray-200 bg-white p-4 text-center">
+          <p className="text-2xl font-black text-gray-900">
             {SCAMS.reduce((s, r) => s + r.reports, 0).toLocaleString()}
           </p>
-          <p className="text-xs text-slate-500">Total reports</p>
+          <p className="text-xs text-gray-400">Total reports</p>
         </div>
       </div>
 
@@ -173,12 +173,12 @@ export default function ScamAlerts() {
           placeholder="Search by company or scam type..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+          className="flex-1 rounded-xl border border-gray-300 bg-gray-100 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
         />
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setCategory("all")}
-            className={`rounded-lg px-3 py-2 text-xs font-bold transition-all ${category === "all" ? "bg-slate-700 text-slate-200" : "text-slate-500 hover:text-slate-300"}`}
+            className={`rounded-lg px-3 py-2 text-xs font-bold transition-all ${category === "all" ? "bg-slate-700 text-gray-800" : "text-gray-400 hover:text-gray-700"}`}
           >
             All
           </button>
@@ -186,7 +186,7 @@ export default function ScamAlerts() {
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`rounded-lg px-3 py-2 text-xs font-bold transition-all ${category === cat ? "bg-slate-700 text-slate-200" : "text-slate-500 hover:text-slate-300"}`}
+              className={`rounded-lg px-3 py-2 text-xs font-bold transition-all ${category === cat ? "bg-slate-700 text-gray-800" : "text-gray-400 hover:text-gray-700"}`}
             >
               {CATEGORY_LABELS[cat]}
             </button>
@@ -197,17 +197,17 @@ export default function ScamAlerts() {
       {/* Scam list */}
       <div className="space-y-3">
         {filtered.length === 0 && (
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-10 text-center text-slate-500">
+          <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center text-gray-400">
             No alerts matching your filter.
           </div>
         )}
         {filtered.map((scam) => (
           <div
             key={scam.id}
-            className="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden"
+            className="rounded-2xl border border-gray-200 bg-white overflow-hidden"
           >
             <div
-              className="p-5 cursor-pointer hover:bg-slate-900/80 transition-colors"
+              className="p-5 cursor-pointer hover:bg-gray-50 transition-colors"
               onClick={() => setExpanded(expanded === scam.id ? null : scam.id)}
             >
               <div className="flex items-start gap-3">
@@ -219,30 +219,30 @@ export default function ScamAlerts() {
                     <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${SEVERITY_COLORS[scam.severity]}`}>
                       {scam.severity.toUpperCase()}
                     </span>
-                    <span className="text-[10px] text-slate-600">{scam.reports} reports · {scam.confirmedAt}</span>
+                    <span className="text-[10px] text-gray-400">{scam.reports} reports · {scam.confirmedAt}</span>
                   </div>
-                  <h3 className="text-sm font-bold text-slate-200 leading-snug">{scam.title}</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">{scam.company}</p>
+                  <h3 className="text-sm font-bold text-gray-800 leading-snug">{scam.title}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{scam.company}</p>
                 </div>
-                <span className="text-slate-600 text-sm flex-shrink-0">
+                <span className="text-gray-400 text-sm flex-shrink-0">
                   {expanded === scam.id ? "▲" : "▼"}
                 </span>
               </div>
             </div>
 
             {expanded === scam.id && (
-              <div className="border-t border-slate-800 px-5 pb-5 pt-4 space-y-3">
+              <div className="border-t border-gray-200 px-5 pb-5 pt-4 space-y-3">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">What happens</p>
-                  <p className="text-sm text-slate-300">{scam.description}</p>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">What happens</p>
+                  <p className="text-sm text-gray-700">{scam.description}</p>
                 </div>
-                <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3">
-                  <p className="text-xs font-semibold text-emerald-400 mb-1">✓ How to avoid it</p>
-                  <p className="text-sm text-slate-300">{scam.howToAvoid}</p>
+                <div className="rounded-xl bg-violet-50 border border-violet-200 p-3">
+                  <p className="text-xs font-semibold text-violet-600 mb-1">✓ How to avoid it</p>
+                  <p className="text-sm text-gray-700">{scam.howToAvoid}</p>
                 </div>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs text-slate-600">Reported by {scam.reportedBy}</p>
-                  <button className="text-xs text-slate-500 hover:text-red-400 transition-colors">
+                  <p className="text-xs text-gray-400">Reported by {scam.reportedBy}</p>
+                  <button className="text-xs text-gray-400 hover:text-red-400 transition-colors">
                     + I&apos;ve seen this too
                   </button>
                 </div>
@@ -253,12 +253,12 @@ export default function ScamAlerts() {
       </div>
 
       {/* Report CTA */}
-      <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-center">
-        <p className="text-slate-300 font-semibold mb-1">Spotted a scam we haven&apos;t listed?</p>
-        <p className="text-sm text-slate-500 mb-4">Report it and earn 30 reputation points. Helps protect the whole community.</p>
+      <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6 text-center">
+        <p className="text-gray-700 font-semibold mb-1">Spotted a scam we haven&apos;t listed?</p>
+        <p className="text-sm text-gray-400 mb-4">Report it and earn 30 reputation points. Helps protect the whole community.</p>
         <a
           href="/community"
-          className="inline-block rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-6 py-3 text-sm font-bold text-slate-950"
+          className="inline-block rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-6 py-3 text-sm font-bold text-white"
         >
           Report a Scam →
         </a>

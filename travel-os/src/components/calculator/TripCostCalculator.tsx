@@ -56,23 +56,23 @@ function CostRow({
   if (amount === 0 && !highlight) return null;
   return (
     <div
-      className={`flex items-center justify-between py-2.5 ${highlight ? "border-t border-slate-700 mt-1" : "border-b border-slate-800/50"}`}
+      className={`flex items-center justify-between py-2.5 ${highlight ? "border-t border-gray-300 mt-1" : "border-b border-gray-200/50"}`}
     >
       <div>
         <span
-          className={`text-sm ${highlight ? "font-bold text-slate-100" : "text-slate-400"}`}
+          className={`text-sm ${highlight ? "font-bold text-gray-900" : "text-gray-500"}`}
         >
           {label}
         </span>
-        {sub && <p className="text-xs text-slate-600 mt-0.5">{sub}</p>}
+        {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
       </div>
       <span
         className={`text-sm font-bold tabular-nums ${
           saving
-            ? "text-emerald-400"
+            ? "text-violet-600"
             : highlight
-              ? "text-slate-100 text-base"
-              : "text-slate-300"
+              ? "text-gray-900 text-base"
+              : "text-gray-700"
         }`}
       >
         {saving ? "-" : ""}
@@ -148,17 +148,17 @@ export default function TripCostCalculator() {
   }, [destination, nights, travelers, accommodation, checkedBags, hasCashback]);
 
   return (
-    <section id="calculator" className="py-20 sm:py-28 border-t border-slate-800/50">
+    <section id="calculator" className="py-20 sm:py-28 border-t border-gray-200/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold uppercase tracking-widest text-emerald-400 mb-3">
+          <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
             True Cost Calculator
           </p>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-100 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 mb-4">
             What does your trip really cost?
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             Booking platforms show you flights and hotels. We show you the
             truth — including baggage fees, resort fees, transfers, and
             cashback you could be earning.
@@ -167,21 +167,21 @@ export default function TripCostCalculator() {
 
         <div className="grid lg:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
           {/* Input panel */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 space-y-5">
-            <h3 className="text-lg font-bold text-slate-100">Trip Details</h3>
+          <div className="rounded-2xl border border-gray-200 bg-white p-6 space-y-5">
+            <h3 className="text-lg font-bold text-gray-900">Trip Details</h3>
 
             {/* Destination */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
                 Destination
               </label>
               <select
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-emerald-500/50"
+                className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 focus:outline-none focus:border-violet-400"
               >
                 {DESTINATIONS.map((d) => (
-                  <option key={d.value} value={d.value} className="bg-slate-900">
+                  <option key={d.value} value={d.value} className="bg-gray-50">
                     {d.label}
                   </option>
                 ))}
@@ -191,44 +191,44 @@ export default function TripCostCalculator() {
             {/* Nights + Travelers */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
                   Nights
                 </label>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setNights(Math.max(1, nights - 1))}
-                    className="h-10 w-10 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:border-slate-600 transition-colors font-bold text-lg flex items-center justify-center"
+                    className="h-10 w-10 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 hover:border-gray-400 transition-colors font-bold text-lg flex items-center justify-center"
                   >
                     −
                   </button>
-                  <span className="text-xl font-black text-slate-100 w-8 text-center tabular-nums">
+                  <span className="text-xl font-black text-gray-900 w-8 text-center tabular-nums">
                     {nights}
                   </span>
                   <button
                     onClick={() => setNights(Math.min(30, nights + 1))}
-                    className="h-10 w-10 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:border-slate-600 transition-colors font-bold text-lg flex items-center justify-center"
+                    className="h-10 w-10 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 hover:border-gray-400 transition-colors font-bold text-lg flex items-center justify-center"
                   >
                     +
                   </button>
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
                   Travelers
                 </label>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setTravelers(Math.max(1, travelers - 1))}
-                    className="h-10 w-10 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:border-slate-600 transition-colors font-bold text-lg flex items-center justify-center"
+                    className="h-10 w-10 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 hover:border-gray-400 transition-colors font-bold text-lg flex items-center justify-center"
                   >
                     −
                   </button>
-                  <span className="text-xl font-black text-slate-100 w-8 text-center tabular-nums">
+                  <span className="text-xl font-black text-gray-900 w-8 text-center tabular-nums">
                     {travelers}
                   </span>
                   <button
                     onClick={() => setTravelers(Math.min(10, travelers + 1))}
-                    className="h-10 w-10 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:border-slate-600 transition-colors font-bold text-lg flex items-center justify-center"
+                    className="h-10 w-10 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 hover:border-gray-400 transition-colors font-bold text-lg flex items-center justify-center"
                   >
                     +
                   </button>
@@ -238,7 +238,7 @@ export default function TripCostCalculator() {
 
             {/* Accommodation */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
                 Accommodation Type
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -248,12 +248,12 @@ export default function TripCostCalculator() {
                     onClick={() => setAccommodation(a.value)}
                     className={`rounded-xl border px-3 py-2.5 text-left transition-all ${
                       accommodation === a.value
-                        ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
-                        : "border-slate-700 bg-slate-800/50 text-slate-400 hover:border-slate-600"
+                        ? "border-violet-400 bg-violet-50 text-violet-600"
+                        : "border-gray-300 bg-white text-gray-500 hover:border-gray-400"
                     }`}
                   >
                     <div className="text-xs font-semibold">{a.label}</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">
+                    <div className="text-[10px] text-gray-400 mt-0.5">
                       ~£{a.pricePerNight}/night
                       {a.resortFee > 0 && (
                         <span className="text-amber-500/80">
@@ -269,7 +269,7 @@ export default function TripCostCalculator() {
 
             {/* Checked bags */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
                 Checked Bags per Person
               </label>
               <div className="flex gap-2">
@@ -279,8 +279,8 @@ export default function TripCostCalculator() {
                     onClick={() => setCheckedBags(n)}
                     className={`flex-1 rounded-xl border py-2.5 text-sm font-semibold transition-all ${
                       checkedBags === n
-                        ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
-                        : "border-slate-700 bg-slate-800/50 text-slate-400 hover:border-slate-600"
+                        ? "border-violet-400 bg-violet-50 text-violet-600"
+                        : "border-gray-300 bg-white text-gray-500 hover:border-gray-400"
                     }`}
                   >
                     {n === 0 ? "Carry-on" : n === 1 ? "1 bag" : "2 bags"}
@@ -299,35 +299,35 @@ export default function TripCostCalculator() {
                   className={`absolute top-1 h-4 w-4 rounded-full bg-white transition-all ${hasCashback ? "left-6" : "left-1"}`}
                 />
               </div>
-              <span className="text-sm font-medium text-slate-300">
+              <span className="text-sm font-medium text-gray-700">
                 Apply available cashback
               </span>
             </label>
 
             <button
               onClick={calculate}
-              className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/40 hover:scale-[1.02]"
+              className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-200 transition-all hover:shadow-violet-200 hover:scale-[1.02]"
             >
               Calculate True Trip Cost →
             </button>
           </div>
 
           {/* Results panel */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+          <div className="rounded-2xl border border-gray-200 bg-white p-6">
             {!calculated || !breakdown ? (
               <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-center">
                 <div className="text-5xl mb-4">🧮</div>
-                <h3 className="text-lg font-bold text-slate-300 mb-2">
+                <h3 className="text-lg font-bold text-gray-700 mb-2">
                   Fill in your trip details
                 </h3>
-                <p className="text-sm text-slate-500 max-w-xs">
+                <p className="text-sm text-gray-400 max-w-xs">
                   We&apos;ll calculate the true all-in cost including every fee
                   the booking platform doesn&apos;t show you.
                 </p>
               </div>
             ) : (
               <div>
-                <h3 className="text-lg font-bold text-slate-100 mb-4">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">
                   True Cost Breakdown
                 </h3>
 
@@ -348,26 +348,26 @@ export default function TripCostCalculator() {
                 )}
 
                 <div className="space-y-0">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-600 mb-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">
                     Flights
                   </p>
                   <CostRow label="Flight base (cheapest found)" amount={breakdown.flightBase} />
                   <CostRow label="Checked baggage fees" amount={breakdown.flightBaggage} sub={checkedBags > 0 ? `${checkedBags} bag × ${travelers} traveler × ~£35` : undefined} />
                   <CostRow label="Seat selection (estimate)" amount={breakdown.flightExtras} />
 
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-600 mt-4 mb-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mt-4 mb-2">
                     Accommodation
                   </p>
                   <CostRow label={`${nights} nights × base rate`} amount={breakdown.accommodation} />
                   <CostRow label="Resort / destination fees" amount={breakdown.accommodationFees} sub={breakdown.accommodationFees > 0 ? "Often not shown at search stage" : undefined} />
 
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-600 mt-4 mb-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mt-4 mb-2">
                     Getting Around
                   </p>
                   <CostRow label="Airport transfers (×2)" amount={breakdown.transferFrom + breakdown.transferTo} />
                   <CostRow label="Local transport (estimate)" amount={breakdown.localTransport} />
 
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-600 mt-4 mb-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mt-4 mb-2">
                     On the Ground
                   </p>
                   <CostRow label="Activities / attractions" amount={breakdown.activities} />
@@ -388,16 +388,16 @@ export default function TripCostCalculator() {
                     />
                   )}
 
-                  <div className="mt-4 rounded-xl border-2 border-emerald-500/30 bg-emerald-500/10 p-4">
+                  <div className="mt-4 rounded-xl border-2 border-violet-200 bg-violet-50 p-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-emerald-400">
+                      <span className="text-sm font-bold text-violet-600">
                         True Total Cost
                       </span>
-                      <span className="text-2xl font-black text-emerald-400">
+                      <span className="text-2xl font-black text-violet-600">
                         £{breakdown.totalAfterCashback.toFixed(0)}
                       </span>
                     </div>
-                    <p className="text-xs text-emerald-400/60 mt-1.5">
+                    <p className="text-xs text-violet-600/60 mt-1.5">
                       Per person: £
                       {(breakdown.totalAfterCashback / travelers).toFixed(0)}
                     </p>
@@ -405,24 +405,24 @@ export default function TripCostCalculator() {
                 </div>
 
                 {/* Cashback tip */}
-                <div className="mt-5 rounded-xl border border-slate-700 bg-slate-800/40 p-4">
-                  <p className="text-xs font-semibold text-slate-300 mb-2">
+                <div className="mt-5 rounded-xl border border-gray-300 bg-gray-50 p-4">
+                  <p className="text-xs font-semibold text-gray-700 mb-2">
                     💡 Available cashback for this trip
                   </p>
                   {CASHBACK_OFFERS.slice(0, 3).map((offer) => (
                     <div
                       key={offer.id}
-                      className="flex items-center justify-between py-1.5 border-b border-slate-700/40 last:border-0"
+                      className="flex items-center justify-between py-1.5 border-b border-gray-300/40 last:border-0"
                     >
                       <div>
-                        <span className="text-xs font-medium text-slate-300">
+                        <span className="text-xs font-medium text-gray-700">
                           {offer.merchant}
                         </span>
-                        <span className="text-[10px] text-slate-500 ml-2">
+                        <span className="text-[10px] text-gray-400 ml-2">
                           via {offer.platform}
                         </span>
                       </div>
-                      <span className="text-xs font-bold text-emerald-400">
+                      <span className="text-xs font-bold text-violet-600">
                         {offer.rate}
                       </span>
                     </div>

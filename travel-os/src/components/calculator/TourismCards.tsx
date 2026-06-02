@@ -25,18 +25,18 @@ function CardCalculator({ card }: { card: TourismCard }) {
   const worthIt = saving > 0;
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+    <div className="rounded-2xl border border-gray-200 bg-white p-5">
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-4">
         <div>
-          <h3 className="text-base font-bold text-slate-100">{card.cardName}</h3>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <h3 className="text-base font-bold text-gray-900">{card.cardName}</h3>
+          <p className="text-sm text-gray-400 mt-0.5">
             📍 {card.city}, {card.country}
           </p>
         </div>
         <div className="flex items-center gap-1">
           <span className="text-amber-400 text-sm">★</span>
-          <span className="text-sm font-semibold text-slate-300">
+          <span className="text-sm font-semibold text-gray-700">
             {card.rating}
           </span>
         </div>
@@ -50,8 +50,8 @@ function CardCalculator({ card }: { card: TourismCard }) {
             onClick={() => setSelectedTier(i)}
             className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all ${
               selectedTier === i
-                ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
-                : "border-slate-700 bg-slate-800/50 text-slate-400 hover:border-slate-600"
+                ? "border-violet-400 bg-violet-50 text-violet-600"
+                : "border-gray-300 bg-white text-gray-500 hover:border-gray-400"
             }`}
           >
             {price.tier} — {curr}
@@ -62,7 +62,7 @@ function CardCalculator({ card }: { card: TourismCard }) {
 
       {/* Attraction checkboxes */}
       <div className="space-y-2 mb-4">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-600 mb-2">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">
           Select your planned attractions
         </p>
         {card.topAttractions.map((attr, i) => (
@@ -75,13 +75,13 @@ function CardCalculator({ card }: { card: TourismCard }) {
                 className={`h-4 w-4 rounded flex-shrink-0 border transition-all flex items-center justify-center ${
                   checkedAttractions[i]
                     ? "border-emerald-500 bg-emerald-500"
-                    : "border-slate-600 bg-slate-800"
+                    : "border-gray-400 bg-gray-100"
                 }`}
                 onClick={() => toggle(i)}
               >
                 {checkedAttractions[i] && (
                   <svg
-                    className="h-2.5 w-2.5 text-slate-950"
+                    className="h-2.5 w-2.5 text-white"
                     viewBox="0 0 10 10"
                     fill="none"
                   >
@@ -96,18 +96,18 @@ function CardCalculator({ card }: { card: TourismCard }) {
                 )}
               </div>
               <span
-                className={`text-xs transition-colors ${checkedAttractions[i] ? "text-slate-300" : "text-slate-500 line-through"}`}
+                className={`text-xs transition-colors ${checkedAttractions[i] ? "text-gray-700" : "text-gray-400 line-through"}`}
               >
                 {attr.name}
               </span>
             </div>
             <div className="flex items-center gap-2">
               {attr.included && (
-                <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded px-1.5 py-0.5">
+                <span className="text-[9px] font-bold text-violet-600 bg-violet-50 border border-violet-200 rounded px-1.5 py-0.5">
                   INCL
                 </span>
               )}
-              <span className="text-xs font-semibold text-slate-400 tabular-nums">
+              <span className="text-xs font-semibold text-gray-500 tabular-nums">
                 {curr}
                 {attr.price}
               </span>
@@ -117,9 +117,9 @@ function CardCalculator({ card }: { card: TourismCard }) {
       </div>
 
       {card.transport && (
-        <div className="flex items-center gap-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 mb-4">
+        <div className="flex items-center gap-2 rounded-lg bg-violet-50 border border-violet-200 px-3 py-2 mb-4">
           <span className="text-xs">🚇</span>
-          <span className="text-xs text-cyan-400 font-medium">
+          <span className="text-xs text-violet-600 font-medium">
             Includes unlimited public transport
           </span>
         </div>
@@ -127,32 +127,32 @@ function CardCalculator({ card }: { card: TourismCard }) {
 
       {/* Result */}
       <div
-        className={`rounded-xl border p-4 ${worthIt ? "border-emerald-500/30 bg-emerald-500/10" : "border-red-500/30 bg-red-500/10"}`}
+        className={`rounded-xl border p-4 ${worthIt ? "border-violet-200 bg-violet-50" : "border-red-500/30 bg-red-500/10"}`}
       >
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold text-slate-400">
+          <span className="text-xs font-bold text-gray-500">
             Individual total
           </span>
-          <span className="text-sm font-bold text-slate-300">
+          <span className="text-sm font-bold text-gray-700">
             {curr}
             {individualTotal}
           </span>
         </div>
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold text-slate-400">Card cost</span>
-          <span className="text-sm font-bold text-slate-300">
+          <span className="text-xs font-bold text-gray-500">Card cost</span>
+          <span className="text-sm font-bold text-gray-700">
             {curr}
             {cardPrice}
           </span>
         </div>
-        <div className="flex items-center justify-between border-t border-slate-700 pt-3">
+        <div className="flex items-center justify-between border-t border-gray-300 pt-3">
           <span
-            className={`text-sm font-black ${worthIt ? "text-emerald-400" : "text-red-400"}`}
+            className={`text-sm font-black ${worthIt ? "text-violet-600" : "text-red-400"}`}
           >
             {worthIt ? `✅ Save ${curr}${saving}` : `❌ Costs ${curr}${Math.abs(saving)} more`}
           </span>
           <span
-            className={`text-xs font-semibold rounded-full px-2.5 py-1 ${worthIt ? "bg-emerald-500/15 text-emerald-400" : "bg-red-500/15 text-red-400"}`}
+            className={`text-xs font-semibold rounded-full px-2.5 py-1 ${worthIt ? "bg-violet-50 text-violet-600" : "bg-red-500/15 text-red-400"}`}
           >
             {worthIt ? "Worth it!" : "Skip card"}
           </span>
@@ -164,16 +164,16 @@ function CardCalculator({ card }: { card: TourismCard }) {
 
 export default function TourismCards() {
   return (
-    <section id="tourism-cards" className="py-20 sm:py-28 border-t border-slate-800/50">
+    <section id="tourism-cards" className="py-20 sm:py-28 border-t border-gray-200/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold uppercase tracking-widest text-emerald-400 mb-3">
+          <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
             Tourism Card Calculator
           </p>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-100 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 mb-4">
             Is the city card worth it?
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             Tick the attractions you&apos;re planning to visit. We&apos;ll tell
             you instantly whether the tourism card saves you money.
           </p>

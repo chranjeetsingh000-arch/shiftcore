@@ -13,9 +13,9 @@ const TYPE_ICONS: Record<string, string> = {
 
 function VerifiedBar({ count, minutesAgo }: { count: number; minutesAgo: number }) {
   const freshness =
-    minutesAgo < 30 ? "text-emerald-400" : minutesAgo < 120 ? "text-amber-400" : "text-slate-500";
+    minutesAgo < 30 ? "text-violet-600" : minutesAgo < 120 ? "text-amber-400" : "text-gray-400";
   return (
-    <div className="flex items-center gap-2 text-xs text-slate-500">
+    <div className="flex items-center gap-2 text-xs text-gray-400">
       <span className={cn("font-semibold", freshness)}>
         ✓ {count} verified
       </span>
@@ -34,13 +34,13 @@ export default function DealCard({ deal }: { deal: Deal }) {
   const hasDiscount = deal.originalPrice && deal.originalPrice > deal.priceFrom;
 
   return (
-    <article className="group relative rounded-2xl border border-slate-800 bg-slate-900/60 p-5 transition-all hover:border-slate-700 hover:bg-slate-900 hover:shadow-xl hover:shadow-slate-950/50">
+    <article className="group relative rounded-2xl border border-gray-200 bg-white p-5 transition-all hover:border-gray-300 hover:bg-gray-50 hover:shadow-xl hover:shadow-slate-950/50">
       {/* Top row */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-2 flex-wrap">
           <DealStatusBadge status={deal.status} />
           {deal.badge && (
-            <span className="rounded-full bg-slate-800 border border-slate-700 px-2.5 py-1 text-[10px] font-bold text-slate-300">
+            <span className="rounded-full bg-gray-100 border border-gray-300 px-2.5 py-1 text-[10px] font-bold text-gray-700">
               {deal.badge}
             </span>
           )}
@@ -49,10 +49,10 @@ export default function DealCard({ deal }: { deal: Deal }) {
       </div>
 
       {/* Title */}
-      <h3 className="text-base font-bold text-slate-100 mb-1.5 leading-snug">
+      <h3 className="text-base font-bold text-gray-900 mb-1.5 leading-snug">
         {deal.title}
       </h3>
-      <p className="text-sm text-slate-400 leading-relaxed mb-4 line-clamp-2">
+      <p className="text-sm text-gray-500 leading-relaxed mb-4 line-clamp-2">
         {deal.description}
       </p>
 
@@ -60,23 +60,23 @@ export default function DealCard({ deal }: { deal: Deal }) {
       <div className="flex items-end justify-between mb-4">
         <div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-slate-100">
+            <span className="text-2xl font-black text-gray-900">
               {deal.currency === "GBP" ? "£" : "€"}
               {deal.priceFrom.toLocaleString()}
             </span>
             {hasDiscount && (
-              <span className="text-sm text-slate-500 line-through">
+              <span className="text-sm text-gray-400 line-through">
                 {deal.currency === "GBP" ? "£" : "€"}
                 {deal.originalPrice!.toLocaleString()}
               </span>
             )}
           </div>
           {deal.dealType === "hotel" && (
-            <p className="text-xs text-slate-500 mt-0.5">per night</p>
+            <p className="text-xs text-gray-400 mt-0.5">per night</p>
           )}
         </div>
         {deal.savingsPercent && (
-          <span className="rounded-lg bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 text-sm font-black text-emerald-400">
+          <span className="rounded-lg bg-violet-50 border border-violet-200 px-2.5 py-1 text-sm font-black text-violet-600">
             -{deal.savingsPercent}%
           </span>
         )}
@@ -87,7 +87,7 @@ export default function DealCard({ deal }: { deal: Deal }) {
         {deal.conditions.slice(0, 3).map((c) => (
           <span
             key={c}
-            className="rounded-md bg-slate-800/80 border border-slate-700/60 px-2 py-0.5 text-[11px] text-slate-400"
+            className="rounded-md bg-gray-100/80 border border-gray-200 px-2 py-0.5 text-[11px] text-gray-500"
           >
             {c}
           </span>
@@ -96,9 +96,9 @@ export default function DealCard({ deal }: { deal: Deal }) {
 
       {/* Cashback */}
       {deal.cashbackAvailable && (
-        <div className="flex items-center gap-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 mb-4">
+        <div className="flex items-center gap-2 rounded-lg bg-violet-50 border border-violet-200 px-3 py-2 mb-4">
           <span className="text-xs">💰</span>
-          <span className="text-xs font-medium text-cyan-400">
+          <span className="text-xs font-medium text-violet-600">
             {deal.cashbackAvailable}
           </span>
         </div>
@@ -111,7 +111,7 @@ export default function DealCard({ deal }: { deal: Deal }) {
           minutesAgo={deal.lastVerifiedMinutesAgo}
         />
         {deal.expiresIn && (
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] text-gray-400">
             Expires: {deal.expiresIn}
           </span>
         )}
@@ -122,12 +122,12 @@ export default function DealCard({ deal }: { deal: Deal }) {
         {deal.destinations.map((d) => (
           <span
             key={d}
-            className="text-[11px] text-slate-500 bg-slate-800/50 rounded px-1.5 py-0.5"
+            className="text-[11px] text-gray-400 bg-white rounded px-1.5 py-0.5"
           >
             📍 {d}
           </span>
         ))}
-        <span className="text-[11px] text-slate-600 ml-auto">
+        <span className="text-[11px] text-gray-400 ml-auto">
           via {deal.contributor}
         </span>
       </div>

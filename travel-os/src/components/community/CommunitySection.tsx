@@ -87,9 +87,9 @@ const LEADERBOARD = [
 
 const TIER_COLORS: Record<string, string> = {
   "Travel Expert": "text-amber-400",
-  "Deal Hunter": "text-cyan-400",
-  "Verified Traveler": "text-emerald-400",
-  Newcomer: "text-slate-400",
+  "Deal Hunter": "text-violet-600",
+  "Verified Traveler": "text-violet-600",
+  Newcomer: "text-gray-500",
 };
 
 export default function CommunitySection() {
@@ -113,17 +113,17 @@ export default function CommunitySection() {
   };
 
   return (
-    <section id="community" className="py-20 sm:py-28 border-t border-slate-800/50">
+    <section id="community" className="py-20 sm:py-28 border-t border-gray-200/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold uppercase tracking-widest text-emerald-400 mb-3">
+          <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
             Community Intelligence
           </p>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-100 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 mb-4">
             You know something. Share it.
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             Every deal you submit, every scam you report, every hack you share
             makes Travel OS smarter for everyone. Earn reputation points and
             unlock contributor tiers.
@@ -134,12 +134,12 @@ export default function CommunitySection() {
           {/* Submission form — 2 cols */}
           <div className="lg:col-span-2">
             {submitted ? (
-              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-10 text-center">
+              <div className="rounded-2xl border border-violet-200 bg-violet-50 p-10 text-center">
                 <div className="text-5xl mb-4">🎉</div>
-                <h3 className="text-xl font-black text-emerald-400 mb-2">
+                <h3 className="text-xl font-black text-violet-600 mb-2">
                   Submission received!
                 </h3>
-                <p className="text-sm text-slate-400 mb-6">
+                <p className="text-sm text-gray-500 mb-6">
                   Your contribution is in the verification queue. Our AI agent
                   will review it shortly, and community members can confirm it.
                   You&apos;ll earn reputation points once verified.
@@ -159,14 +159,14 @@ export default function CommunitySection() {
                       category: "",
                     });
                   }}
-                  className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-6 py-2.5 text-sm font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-all"
+                  className="rounded-xl border border-emerald-500/40 bg-violet-50 px-6 py-2.5 text-sm font-semibold text-violet-600 hover:bg-emerald-500/20 transition-all"
                 >
                   Submit another
                 </button>
               </div>
             ) : (
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-                <h3 className="text-lg font-bold text-slate-100 mb-5">
+              <div className="rounded-2xl border border-gray-200 bg-white p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-5">
                   Submit a contribution
                 </h3>
 
@@ -178,8 +178,8 @@ export default function CommunitySection() {
                       onClick={() => setActiveType(type.value)}
                       className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition-all ${
                         activeType === type.value
-                          ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
-                          : "border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600"
+                          ? "border-violet-400 bg-violet-50 text-violet-600"
+                          : "border-gray-300 bg-gray-50 text-gray-500 hover:border-gray-400"
                       }`}
                     >
                       <span className="text-xl">{type.icon}</span>
@@ -191,9 +191,9 @@ export default function CommunitySection() {
                 </div>
 
                 {/* Context hint */}
-                <div className="rounded-lg bg-slate-800/40 border border-slate-700/50 px-3.5 py-2.5 mb-5">
-                  <p className="text-xs text-slate-400">
-                    <span className="font-semibold text-slate-300">
+                <div className="rounded-lg bg-gray-50 border border-gray-300/50 px-3.5 py-2.5 mb-5">
+                  <p className="text-xs text-gray-500">
+                    <span className="font-semibold text-gray-700">
                       {SUBMISSION_TYPES.find((t) => t.value === activeType)?.icon}{" "}
                       {SUBMISSION_TYPES.find((t) => t.value === activeType)?.label}:
                     </span>{" "}
@@ -204,7 +204,7 @@ export default function CommunitySection() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Common: Title */}
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
                       {activeType === "scam" ? "Scam description" : "Title"}
                     </label>
                     <input
@@ -225,7 +225,7 @@ export default function CommunitySection() {
                                 : "e.g. London to New York, September"
                       }
                       required
-                      className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                      className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
                     />
                   </div>
 
@@ -233,7 +233,7 @@ export default function CommunitySection() {
                   {(activeType === "deal" || activeType === "price") && (
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
                           Origin
                         </label>
                         <input
@@ -243,11 +243,11 @@ export default function CommunitySection() {
                             setForm({ ...form, origin: e.target.value })
                           }
                           placeholder="e.g. London LHR"
-                          className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                          className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
                           Destination
                         </label>
                         <input
@@ -257,7 +257,7 @@ export default function CommunitySection() {
                             setForm({ ...form, destination: e.target.value })
                           }
                           placeholder="e.g. Tokyo NRT"
-                          className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                          className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
                         />
                       </div>
                     </div>
@@ -265,7 +265,7 @@ export default function CommunitySection() {
 
                   {(activeType === "deal" || activeType === "price") && (
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
                         Price (£ or €)
                       </label>
                       <input
@@ -275,14 +275,14 @@ export default function CommunitySection() {
                           setForm({ ...form, price: e.target.value })
                         }
                         placeholder="e.g. 489"
-                        className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                        className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
                       />
                     </div>
                   )}
 
                   {activeType === "voucher" && (
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
                         Voucher Code
                       </label>
                       <input
@@ -292,14 +292,14 @@ export default function CommunitySection() {
                           setForm({ ...form, code: e.target.value })
                         }
                         placeholder="e.g. SAVE15"
-                        className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm font-mono text-emerald-400 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 uppercase"
+                        className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm font-mono text-violet-600 placeholder-gray-400 focus:outline-none focus:border-violet-400 uppercase"
                       />
                     </div>
                   )}
 
                   {activeType === "scam" && (
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
                         Location
                       </label>
                       <input
@@ -309,7 +309,7 @@ export default function CommunitySection() {
                           setForm({ ...form, location: e.target.value })
                         }
                         placeholder="e.g. Bangkok, Suvarnabhumi Airport"
-                        className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                        className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
                       />
                     </div>
                   )}
@@ -317,7 +317,7 @@ export default function CommunitySection() {
                   {/* URL (not required for scam/price) */}
                   {activeType !== "scam" && activeType !== "price" && (
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
                         Booking / Source URL
                       </label>
                       <input
@@ -327,14 +327,14 @@ export default function CommunitySection() {
                           setForm({ ...form, url: e.target.value })
                         }
                         placeholder="https://..."
-                        className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                        className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
                       />
                     </div>
                   )}
 
                   {/* Description */}
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
                       Details / Notes
                     </label>
                     <textarea
@@ -344,12 +344,12 @@ export default function CommunitySection() {
                       }
                       rows={3}
                       placeholder="Add any conditions, tips, or context that other travelers should know..."
-                      className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 resize-none"
+                      className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400 resize-none"
                     />
                   </div>
 
                   {/* Disclaimer */}
-                  <p className="text-[11px] text-slate-600">
+                  <p className="text-[11px] text-gray-400">
                     By submitting, you confirm this information is accurate to
                     your knowledge. Submissions are reviewed by our AI agent and
                     community before publication.
@@ -357,7 +357,7 @@ export default function CommunitySection() {
 
                   <button
                     type="submit"
-                    className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/40 hover:scale-[1.02]"
+                    className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-200 transition-all hover:shadow-violet-200 hover:scale-[1.02]"
                   >
                     Submit Contribution →
                   </button>
@@ -369,8 +369,8 @@ export default function CommunitySection() {
           {/* Leaderboard + Tiers */}
           <div className="space-y-5">
             {/* Leaderboard */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-              <h3 className="text-sm font-bold text-slate-100 mb-4">
+            <div className="rounded-2xl border border-gray-200 bg-white p-5">
+              <h3 className="text-sm font-bold text-gray-900 mb-4">
                 🏆 Top Contributors
               </h3>
               <div className="space-y-3">
@@ -380,7 +380,7 @@ export default function CommunitySection() {
                       {user.badge}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-200 truncate">
+                      <p className="text-sm font-semibold text-gray-800 truncate">
                         {user.name}
                       </p>
                       <p
@@ -390,10 +390,10 @@ export default function CommunitySection() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-bold text-slate-300 tabular-nums">
+                      <p className="text-sm font-bold text-gray-700 tabular-nums">
                         {user.points.toLocaleString()}
                       </p>
-                      <p className="text-[10px] text-slate-500">pts</p>
+                      <p className="text-[10px] text-gray-400">pts</p>
                     </div>
                   </div>
                 ))}
@@ -401,8 +401,8 @@ export default function CommunitySection() {
             </div>
 
             {/* Tier breakdown */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-              <h3 className="text-sm font-bold text-slate-100 mb-4">
+            <div className="rounded-2xl border border-gray-200 bg-white p-5">
+              <h3 className="text-sm font-bold text-gray-900 mb-4">
                 📊 Contributor Tiers
               </h3>
               <div className="space-y-3">
@@ -417,10 +417,10 @@ export default function CommunitySection() {
                       className={`mt-0.5 h-3 w-3 rounded-full flex-shrink-0 ${t.color}`}
                     />
                     <div>
-                      <p className="text-xs font-bold text-slate-300">
+                      <p className="text-xs font-bold text-gray-700">
                         {t.tier}
                       </p>
-                      <p className="text-[10px] text-slate-500">
+                      <p className="text-[10px] text-gray-400">
                         {t.range} · {t.perks}
                       </p>
                     </div>
@@ -430,8 +430,8 @@ export default function CommunitySection() {
             </div>
 
             {/* Recent activity */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-              <h3 className="text-sm font-bold text-slate-100 mb-4">
+            <div className="rounded-2xl border border-gray-200 bg-white p-5">
+              <h3 className="text-sm font-bold text-gray-900 mb-4">
                 ⚡ Recent Activity
               </h3>
               <div className="space-y-3">
@@ -444,15 +444,15 @@ export default function CommunitySection() {
                   <div key={i} className="flex items-start gap-2.5">
                     <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-slate-300">
+                      <p className="text-xs text-gray-700">
                         <span className="font-semibold">{item.user}</span>{" "}
                         {item.action.toLowerCase()}
                       </p>
-                      <p className="text-[10px] text-slate-500 truncate">
+                      <p className="text-[10px] text-gray-400 truncate">
                         {item.detail}
                       </p>
                     </div>
-                    <span className="text-[10px] text-slate-600 flex-shrink-0">
+                    <span className="text-[10px] text-gray-400 flex-shrink-0">
                       {item.time} ago
                     </span>
                   </div>

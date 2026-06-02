@@ -78,13 +78,13 @@ export default function CashbackTable() {
     <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Info banner */}
-        <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4 mb-8 flex items-start gap-3">
+        <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4 mb-8 flex items-start gap-3">
           <span className="text-xl flex-shrink-0">💡</span>
           <div>
-            <p className="text-sm font-semibold text-cyan-400">
+            <p className="text-sm font-semibold text-violet-600">
               How to use this table
             </p>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            <p className="text-xs text-gray-500 mt-1 leading-relaxed">
               Always activate cashback <strong>before</strong> clicking through
               to the merchant. Open your cashback portal, search for the
               merchant, click through from there, then complete your booking in
@@ -100,15 +100,15 @@ export default function CashbackTable() {
             placeholder="Search merchants..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 min-w-[200px]"
+            className="rounded-xl border border-gray-300 bg-gray-100 px-4 py-2.5 text-sm text-gray-800 placeholder-slate-500 focus:outline-none focus:border-violet-400 min-w-[200px]"
           />
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm text-slate-400 focus:outline-none focus:border-emerald-500/50"
+            className="rounded-xl border border-gray-300 bg-gray-100 px-4 py-2.5 text-sm text-gray-500 focus:outline-none focus:border-violet-400"
           >
             {CATEGORIES.map((c) => (
-              <option key={c} value={c} className="bg-slate-900">
+              <option key={c} value={c} className="bg-gray-50">
                 {c}
               </option>
             ))}
@@ -117,21 +117,21 @@ export default function CashbackTable() {
             onClick={() => setVoucherOnly(!voucherOnly)}
             className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all ${
               voucherOnly
-                ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-400"
-                : "border-slate-700 bg-slate-800/50 text-slate-400 hover:border-slate-600"
+                ? "border-violet-400 bg-violet-50 text-violet-600"
+                : "border-gray-300 bg-white text-gray-500 hover:border-gray-400"
             }`}
           >
             🎫 Has voucher code
           </button>
-          <div className="flex items-center gap-1 rounded-xl border border-slate-700 bg-slate-800/50 p-1">
+          <div className="flex items-center gap-1 rounded-xl border border-gray-300 bg-white p-1">
             {(["best", "merchant"] as const).map((s) => (
               <button
                 key={s}
                 onClick={() => setSortBy(s)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
                   sortBy === s
-                    ? "bg-slate-700 text-slate-100"
-                    : "text-slate-500 hover:text-slate-300"
+                    ? "bg-slate-700 text-gray-900"
+                    : "text-gray-400 hover:text-gray-700"
                 }`}
               >
                 {s === "best" ? "Best rate" : "A–Z"}
@@ -140,14 +140,14 @@ export default function CashbackTable() {
           </div>
         </div>
 
-        <p className="text-xs text-slate-500 mb-4">
+        <p className="text-xs text-gray-400 mb-4">
           Showing {filtered.length} merchants · Rates updated daily
         </p>
 
         {/* Table */}
-        <div className="rounded-2xl border border-slate-800 overflow-hidden">
+        <div className="rounded-2xl border border-gray-200 overflow-hidden">
           {/* Header */}
-          <div className="grid grid-cols-12 gap-2 px-4 py-3 bg-slate-900 border-b border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+          <div className="grid grid-cols-12 gap-2 px-4 py-3 bg-gray-50 border-b border-gray-200 text-[10px] font-bold uppercase tracking-wider text-gray-400">
             <div className="col-span-4">Merchant</div>
             <div className="col-span-2 text-center">Quidco</div>
             <div className="col-span-2 text-center">TopCashback</div>
@@ -158,22 +158,22 @@ export default function CashbackTable() {
           {/* Rows */}
           <div className="divide-y divide-slate-800/60">
             {filtered.map((m) => (
-              <div key={m.merchant} className="bg-slate-900/40 hover:bg-slate-900/80 transition-colors">
+              <div key={m.merchant} className="bg-gray-50 hover:bg-gray-50 transition-colors">
                 {/* Main row */}
                 <div className="grid grid-cols-12 gap-2 px-4 py-4 items-center">
                   <div className="col-span-4">
                     <div className="flex items-center gap-3">
                       <span className="text-xl">{m.logo}</span>
                       <div>
-                        <p className="text-sm font-bold text-slate-200">
+                        <p className="text-sm font-bold text-gray-800">
                           {m.merchant}
                         </p>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[10px] text-slate-500 bg-slate-800 rounded px-1.5 py-0.5">
+                          <span className="text-[10px] text-gray-400 bg-gray-100 rounded px-1.5 py-0.5">
                             {m.category}
                           </span>
                           {m.hasVoucher && (
-                            <span className="text-[10px] text-emerald-400 bg-emerald-500/10 rounded px-1.5 py-0.5 border border-emerald-500/20">
+                            <span className="text-[10px] text-violet-600 bg-violet-50 rounded px-1.5 py-0.5 border border-violet-200">
                               🎫 Code
                             </span>
                           )}
@@ -192,8 +192,8 @@ export default function CashbackTable() {
                         <span
                           className={`text-sm font-bold ${
                             rate === m.best
-                              ? "text-emerald-400"
-                              : "text-slate-400"
+                              ? "text-violet-600"
+                              : "text-gray-500"
                           }`}
                         >
                           {rate}
@@ -206,10 +206,10 @@ export default function CashbackTable() {
 
                   <div className="col-span-2 text-center">
                     <div className="inline-flex flex-col items-center">
-                      <span className="text-sm font-black text-emerald-400">
+                      <span className="text-sm font-black text-violet-600">
                         {m.best}
                       </span>
-                      <span className="text-[9px] text-slate-600 mt-0.5">
+                      <span className="text-[9px] text-gray-400 mt-0.5">
                         {m.bestPlatform}
                       </span>
                     </div>
@@ -219,26 +219,26 @@ export default function CashbackTable() {
                 {/* Voucher row */}
                 {m.hasVoucher && m.voucherCode && (
                   <div className="px-4 pb-3 flex items-center gap-3 flex-wrap">
-                    <div className="flex items-center gap-2 rounded-lg bg-slate-800/80 border border-slate-700 px-3 py-2">
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                    <div className="flex items-center gap-2 rounded-lg bg-gray-100/80 border border-gray-300 px-3 py-2">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
                         Code:
                       </span>
-                      <code className="text-sm font-bold text-emerald-400 font-mono">
+                      <code className="text-sm font-bold text-violet-600 font-mono">
                         {m.voucherCode}
                       </code>
                       <button
                         onClick={() => copyCode(m.voucherCode!)}
-                        className="ml-1 rounded px-2 py-0.5 text-[10px] font-semibold bg-slate-700 text-slate-300 hover:bg-emerald-500/20 hover:text-emerald-400 transition-all"
+                        className="ml-1 rounded px-2 py-0.5 text-[10px] font-semibold bg-slate-700 text-gray-700 hover:bg-emerald-500/20 hover:text-violet-600 transition-all"
                       >
                         {copiedCode === m.voucherCode ? "✓ Copied" : "Copy"}
                       </button>
                     </div>
                     {m.voucherDiscount && (
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-gray-500">
                         {m.voucherDiscount}
                       </span>
                     )}
-                    <span className="text-[10px] text-slate-600 ml-auto">
+                    <span className="text-[10px] text-gray-400 ml-auto">
                       Checked {m.lastChecked}
                     </span>
                   </div>
@@ -247,7 +247,7 @@ export default function CashbackTable() {
                 {/* Notes */}
                 {m.notes && (
                   <div className="px-4 pb-3">
-                    <p className="text-[11px] text-slate-500 flex items-start gap-1.5">
+                    <p className="text-[11px] text-gray-400 flex items-start gap-1.5">
                       <span>ℹ️</span>
                       {m.notes}
                     </p>
@@ -260,7 +260,7 @@ export default function CashbackTable() {
 
         {filtered.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-lg font-semibold text-slate-400">
+            <p className="text-lg font-semibold text-gray-500">
               No merchants match your filters
             </p>
             <button
@@ -269,7 +269,7 @@ export default function CashbackTable() {
                 setCategory("All");
                 setVoucherOnly(false);
               }}
-              className="mt-3 text-sm text-emerald-400 hover:text-emerald-300 underline"
+              className="mt-3 text-sm text-violet-600 hover:text-violet-500 underline"
             >
               Clear filters
             </button>
@@ -277,7 +277,7 @@ export default function CashbackTable() {
         )}
 
         {/* Disclaimer */}
-        <p className="text-xs text-slate-600 mt-6 text-center">
+        <p className="text-xs text-gray-400 mt-6 text-center">
           Cashback rates change frequently. Always verify current rates on the
           cashback platform before booking. Travel OS earns a small referral fee
           when you sign up to cashback platforms via our links. This never

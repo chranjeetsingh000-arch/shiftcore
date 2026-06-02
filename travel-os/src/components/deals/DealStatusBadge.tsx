@@ -8,7 +8,7 @@ const CONFIG: Record<
   LIVE: {
     label: "LIVE",
     className:
-      "bg-emerald-500/15 border-emerald-500/30 text-emerald-400",
+      "bg-violet-50 border-violet-200 text-violet-600",
     dot: "bg-emerald-400",
   },
   COOLING: {
@@ -18,7 +18,7 @@ const CONFIG: Record<
   },
   EXPIRED: {
     label: "EXPIRED",
-    className: "bg-slate-700/40 border-slate-600/30 text-slate-500",
+    className: "bg-slate-700/40 border-gray-400/30 text-gray-400",
     dot: "bg-slate-500",
   },
   UNVERIFIED: {

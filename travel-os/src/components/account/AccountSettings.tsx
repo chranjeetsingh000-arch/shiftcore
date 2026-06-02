@@ -77,20 +77,20 @@ export default function AccountSettings() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-black text-slate-100">Account Settings</h1>
-        <p className="text-slate-400 mt-1">Manage your profile, plan, and preferences.</p>
+        <h1 className="text-2xl font-black text-gray-900">Account Settings</h1>
+        <p className="text-gray-500 mt-1">Manage your profile, plan, and preferences.</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-8 border-b border-slate-800 overflow-x-auto">
+      <div className="flex gap-1 mb-8 border-b border-gray-200 overflow-x-auto">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 -mb-px ${
               tab === t.id
-                ? "border-emerald-500 text-emerald-400"
-                : "border-transparent text-slate-500 hover:text-slate-300"
+                ? "border-emerald-500 text-violet-600"
+                : "border-transparent text-gray-400 hover:text-gray-700"
             }`}
           >
             {t.label}
@@ -100,37 +100,37 @@ export default function AccountSettings() {
 
       {/* Profile */}
       {tab === "profile" && (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 space-y-5">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 space-y-5">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Full Name</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Full Name</label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Your name"
-              className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+              className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Email</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Email</label>
             <input
               type="email"
               value={email}
               disabled
-              className="w-full rounded-xl border border-slate-800 bg-slate-800/40 px-4 py-3 text-sm text-slate-500 cursor-not-allowed"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-400 cursor-not-allowed"
             />
-            <p className="text-[11px] text-slate-600 mt-1">Email changes require re-verification. Contact support.</p>
+            <p className="text-[11px] text-gray-400 mt-1">Email changes require re-verification. Contact support.</p>
           </div>
           {error && (
             <div className="rounded-xl bg-red-500/10 border border-red-500/30 px-4 py-3 text-sm text-red-400">{error}</div>
           )}
           {saved && (
-            <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-4 py-3 text-sm text-emerald-400">Profile saved successfully.</div>
+            <div className="rounded-xl bg-violet-50 border border-violet-200 px-4 py-3 text-sm text-violet-600">Profile saved successfully.</div>
           )}
           <button
             onClick={saveProfile}
             disabled={saving}
-            className="rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-6 py-3 text-sm font-bold text-slate-950 disabled:opacity-60"
+            className="rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>
@@ -140,11 +140,11 @@ export default function AccountSettings() {
       {/* Plan */}
       {tab === "plan" && (
         <div className="space-y-5">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Current Plan</p>
-            <p className="text-2xl font-black text-slate-100">{PLAN_LABELS[currentPlan] ?? currentPlan}</p>
+          <div className="rounded-2xl border border-gray-200 bg-white p-6">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Current Plan</p>
+            <p className="text-2xl font-black text-gray-900">{PLAN_LABELS[currentPlan] ?? currentPlan}</p>
             {currentPlan === "free" && (
-              <p className="text-sm text-slate-400 mt-1">Upgrade to unlock the full deal feed and unlimited alerts.</p>
+              <p className="text-sm text-gray-500 mt-1">Upgrade to unlock the full deal feed and unlimited alerts.</p>
             )}
           </div>
 
@@ -155,25 +155,25 @@ export default function AccountSettings() {
                   key={plan.id}
                   className={`rounded-2xl border p-5 ${
                     plan.highlight
-                      ? "border-emerald-500/40 bg-emerald-500/5"
-                      : "border-slate-800 bg-slate-900/60"
+                      ? "border-emerald-500/40 bg-violet-50"
+                      : "border-gray-200 bg-white"
                   }`}
                 >
                   {plan.highlight && (
-                    <span className="inline-block rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 px-2 py-0.5 text-[10px] font-black text-slate-950 mb-2">
+                    <span className="inline-block rounded-full bg-gradient-to-r from-violet-600 to-pink-500 px-2 py-0.5 text-[10px] font-black text-white mb-2">
                       MOST POPULAR
                     </span>
                   )}
-                  <h3 className="text-base font-black text-slate-100">{plan.name}</h3>
-                  <p className="text-lg font-black text-emerald-400 mb-3">{plan.price}</p>
+                  <h3 className="text-base font-black text-gray-900">{plan.name}</h3>
+                  <p className="text-lg font-black text-violet-600 mb-3">{plan.price}</p>
                   <ul className="space-y-1.5 mb-4">
                     {plan.features.map((f) => (
-                      <li key={f} className="flex items-center gap-2 text-xs text-slate-400">
-                        <span className="text-emerald-500">✓</span>{f}
+                      <li key={f} className="flex items-center gap-2 text-xs text-gray-500">
+                        <span className="text-violet-500">✓</span>{f}
                       </li>
                     ))}
                   </ul>
-                  <button className="w-full rounded-xl border border-slate-700 bg-slate-800 py-2 text-xs font-bold text-slate-300 hover:border-emerald-500/40 hover:text-emerald-400 transition-all">
+                  <button className="w-full rounded-xl border border-gray-300 bg-gray-100 py-2 text-xs font-bold text-gray-700 hover:border-emerald-500/40 hover:text-violet-600 transition-all">
                     Upgrade to {plan.name}
                   </button>
                 </div>
@@ -182,9 +182,9 @@ export default function AccountSettings() {
           )}
 
           {currentPlan !== "free" && (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-              <p className="text-sm text-slate-400 mb-4">Need to cancel or change billing? We&apos;re subscription-first — no hidden fees.</p>
-              <button className="rounded-xl border border-slate-700 bg-slate-800 px-5 py-2.5 text-sm font-semibold text-slate-400 hover:border-red-500/30 hover:text-red-400 transition-all">
+            <div className="rounded-2xl border border-gray-200 bg-white p-6">
+              <p className="text-sm text-gray-500 mb-4">Need to cancel or change billing? We&apos;re subscription-first — no hidden fees.</p>
+              <button className="rounded-xl border border-gray-300 bg-gray-100 px-5 py-2.5 text-sm font-semibold text-gray-500 hover:border-red-500/30 hover:text-red-400 transition-all">
                 Cancel Subscription
               </button>
             </div>
@@ -194,7 +194,7 @@ export default function AccountSettings() {
 
       {/* Notifications */}
       {tab === "notifications" && (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 space-y-5">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 space-y-5">
           {[
             { id: "email", label: "Email deal alerts", desc: "Receive your saved deal alerts via email", value: emailAlerts, set: setEmailAlerts },
             { id: "push", label: "Push notifications", desc: "Browser push for deals you're watching", value: pushAlerts, set: setPushAlerts },
@@ -202,8 +202,8 @@ export default function AccountSettings() {
           ].map((item) => (
             <div key={item.id} className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold text-slate-200">{item.label}</p>
-                <p className="text-xs text-slate-500">{item.desc}</p>
+                <p className="text-sm font-semibold text-gray-800">{item.label}</p>
+                <p className="text-xs text-gray-400">{item.desc}</p>
               </div>
               <button
                 onClick={() => item.set(!item.value)}
@@ -219,7 +219,7 @@ export default function AccountSettings() {
               </button>
             </div>
           ))}
-          <button className="rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-6 py-3 text-sm font-bold text-slate-950">
+          <button className="rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-6 py-3 text-sm font-bold text-white">
             Save Preferences
           </button>
         </div>
@@ -229,7 +229,7 @@ export default function AccountSettings() {
       {tab === "danger" && (
         <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6 space-y-4">
           <h2 className="text-base font-bold text-red-400">Danger Zone</h2>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-gray-500">
             Deleting your account will permanently remove all your saved deals, alerts, and community contributions. This cannot be undone.
           </p>
           <button

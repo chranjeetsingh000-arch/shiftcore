@@ -8,6 +8,7 @@ import TourismCards from "@/components/calculator/TourismCards";
 import CommunitySection from "@/components/community/CommunitySection";
 import Pricing from "@/components/landing/Pricing";
 import CTA from "@/components/landing/CTA";
+import MobileAppBanner from "@/components/landing/MobileAppBanner";
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
         <TourismCards />
         <CommunitySection />
         <Pricing />
+        <MobileAppBanner />
         <CTA />
       </main>
       <Footer />

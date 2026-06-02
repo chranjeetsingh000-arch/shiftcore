@@ -49,22 +49,22 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
         <div>
-          <p className="text-sm text-slate-500 mb-1">Welcome back</p>
-          <h1 className="text-3xl font-black text-slate-100">
+          <p className="text-sm text-gray-400 mb-1">Welcome back</p>
+          <h1 className="text-3xl font-black text-gray-900">
             {MOCK_USER.name}
           </h1>
           <div className="flex items-center gap-3 mt-2">
-            <span className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 text-xs font-bold text-emerald-400">
+            <span className="rounded-full bg-violet-50 border border-violet-200 px-3 py-1 text-xs font-bold text-violet-600">
               {MOCK_USER.tier} Plan
             </span>
-            <span className="rounded-full bg-slate-800 border border-slate-700 px-3 py-1 text-xs font-semibold text-slate-400">
+            <span className="rounded-full bg-gray-100 border border-gray-300 px-3 py-1 text-xs font-semibold text-gray-500">
               {MOCK_USER.contributorTier} · {MOCK_USER.points} pts
             </span>
           </div>
         </div>
         <Link
           href="/#deals"
-          className="rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-2.5 text-sm font-bold text-slate-950"
+          className="rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-5 py-2.5 text-sm font-bold text-white"
         >
           Browse Deals →
         </Link>
@@ -73,29 +73,29 @@ export default function Dashboard() {
       {/* Stats row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
-          { label: "Total Saved", value: `£${totalSaved.toFixed(2)}`, sub: "last 30 days", color: "text-emerald-400" },
-          { label: "Loyalty Value", value: `~£${totalLoyaltyValue}`, sub: "across all programs", color: "text-cyan-400" },
-          { label: "Saved Deals", value: `${MOCK_USER.savedDeals.length}`, sub: "in your list", color: "text-slate-100" },
+          { label: "Total Saved", value: `£${totalSaved.toFixed(2)}`, sub: "last 30 days", color: "text-violet-600" },
+          { label: "Loyalty Value", value: `~£${totalLoyaltyValue}`, sub: "across all programs", color: "text-violet-600" },
+          { label: "Saved Deals", value: `${MOCK_USER.savedDeals.length}`, sub: "in your list", color: "text-gray-900" },
           { label: "Active Alerts", value: `${alerts.filter((a) => a.active).length}`, sub: "routes monitored", color: "text-amber-400" },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-            <p className="text-xs text-slate-500 mb-1">{stat.label}</p>
+          <div key={stat.label} className="rounded-2xl border border-gray-200 bg-white p-5">
+            <p className="text-xs text-gray-400 mb-1">{stat.label}</p>
             <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
-            <p className="text-xs text-slate-600 mt-0.5">{stat.sub}</p>
+            <p className="text-xs text-gray-400 mt-0.5">{stat.sub}</p>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-slate-800 mb-6 overflow-x-auto">
+      <div className="flex gap-1 border-b border-gray-200 mb-6 overflow-x-auto">
         {TABS.map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all ${
               tab === t
-                ? "border-emerald-500 text-emerald-400"
-                : "border-transparent text-slate-500 hover:text-slate-300"
+                ? "border-emerald-500 text-violet-600"
+                : "border-transparent text-gray-400 hover:text-gray-700"
             }`}
           >
             {t}
@@ -107,39 +107,39 @@ export default function Dashboard() {
       {tab === "Overview" && (
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Recent savings */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-            <h3 className="text-sm font-bold text-slate-200 mb-4">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <h3 className="text-sm font-bold text-gray-800 mb-4">
               💰 Recent Savings
             </h3>
             <div className="space-y-3">
               {MOCK_USER.recentSavings.map((s, i) => (
-                <div key={i} className="flex items-center justify-between py-2 border-b border-slate-800/60 last:border-0">
+                <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                   <div>
-                    <p className="text-sm text-slate-300 font-medium">{s.item}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{s.method} · {s.date}</p>
+                    <p className="text-sm text-gray-700 font-medium">{s.item}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{s.method} · {s.date}</p>
                   </div>
-                  <span className="text-sm font-black text-emerald-400">+£{s.saving.toFixed(2)}</span>
+                  <span className="text-sm font-black text-violet-600">+£{s.saving.toFixed(2)}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Active alerts */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-slate-200">
+              <h3 className="text-sm font-bold text-gray-800">
                 🔔 Active Alerts
               </h3>
-              <Link href="#" className="text-xs text-emerald-400 hover:text-emerald-300">
+              <Link href="#" className="text-xs text-violet-600 hover:text-violet-500">
                 + Add alert
               </Link>
             </div>
             <div className="space-y-3">
               {alerts.map((alert) => (
-                <div key={alert.id} className="flex items-center gap-3 py-2 border-b border-slate-800/60 last:border-0">
+                <div key={alert.id} className="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0">
                   <div className="flex-1">
-                    <p className="text-sm text-slate-300 font-medium">{alert.route}</p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-sm text-gray-700 font-medium">{alert.route}</p>
+                    <p className="text-xs text-gray-400">
                       Alert when below £{alert.threshold}
                     </p>
                   </div>
@@ -155,18 +155,18 @@ export default function Dashboard() {
           </div>
 
           {/* Upgrade prompt if on free */}
-          <div className="lg:col-span-2 rounded-2xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/5 to-cyan-500/5 p-5 flex items-center justify-between gap-4 flex-wrap">
+          <div className="lg:col-span-2 rounded-2xl border border-violet-200 bg-gradient-to-r from-emerald-500/5 to-cyan-500/5 p-5 flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <p className="text-sm font-bold text-emerald-400 mb-1">
+              <p className="text-sm font-bold text-violet-600 mb-1">
                 Upgrade to Premium for £9.99/mo
               </p>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-gray-500">
                 Unlock the Booking Path Optimizer, Loyalty Portfolio Sync, and AI Travel Planner.
               </p>
             </div>
             <Link
               href="/#pricing"
-              className="rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-2.5 text-sm font-bold text-slate-950 flex-shrink-0"
+              className="rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-5 py-2.5 text-sm font-bold text-white flex-shrink-0"
             >
               Upgrade →
             </Link>
@@ -179,20 +179,20 @@ export default function Dashboard() {
           {savedDeals.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-4xl mb-3">🔖</div>
-              <p className="text-slate-400">No saved deals yet.</p>
-              <Link href="/#deals" className="mt-3 inline-block text-sm text-emerald-400 underline">
+              <p className="text-gray-500">No saved deals yet.</p>
+              <Link href="/#deals" className="mt-3 inline-block text-sm text-violet-600 underline">
                 Browse deals
               </Link>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {savedDeals.map((deal) => (
-                <Link key={deal.id} href={`/deals/${deal.id}`} className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 hover:border-slate-700 hover:bg-slate-900 transition-all block">
+                <Link key={deal.id} href={`/deals/${deal.id}`} className="rounded-2xl border border-gray-200 bg-white p-5 hover:border-gray-300 hover:bg-gray-50 transition-all block">
                   <div className="flex items-center gap-2 mb-2">
                     <DealStatusBadge status={deal.status} />
                   </div>
-                  <h3 className="text-sm font-bold text-slate-200 mb-1">{deal.title}</h3>
-                  <p className="text-xl font-black text-emerald-400">
+                  <h3 className="text-sm font-bold text-gray-800 mb-1">{deal.title}</h3>
+                  <p className="text-xl font-black text-violet-600">
                     {deal.currency === "GBP" ? "£" : "€"}{deal.priceFrom.toLocaleString()}
                   </p>
                   {deal.expiresIn && (
@@ -209,10 +209,10 @@ export default function Dashboard() {
         <div className="max-w-2xl">
           <div className="space-y-3 mb-6">
             {alerts.map((alert) => (
-              <div key={alert.id} className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 flex items-center gap-4">
+              <div key={alert.id} className="rounded-2xl border border-gray-200 bg-white p-4 flex items-center gap-4">
                 <div className="flex-1">
-                  <p className="text-sm font-bold text-slate-200">{alert.route}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-sm font-bold text-gray-800">{alert.route}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
                     ✈️ Flight · Alert below £{alert.threshold}
                   </p>
                 </div>
@@ -226,27 +226,27 @@ export default function Dashboard() {
             ))}
           </div>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-            <h3 className="text-sm font-bold text-slate-200 mb-4">+ New Alert</h3>
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <h3 className="text-sm font-bold text-gray-800 mb-4">+ New Alert</h3>
             <div className="grid grid-cols-2 gap-3 mb-3">
               <input
                 type="text"
                 placeholder="Origin (e.g. London)"
-                className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                className="rounded-xl border border-gray-300 bg-gray-100 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
               />
               <input
                 type="text"
                 placeholder="Destination (e.g. Tokyo)"
-                className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                className="rounded-xl border border-gray-300 bg-gray-100 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
               />
             </div>
             <div className="flex gap-3">
               <input
                 type="number"
                 placeholder="Max price £"
-                className="flex-1 rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+                className="flex-1 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400"
               />
-              <button className="rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-2.5 text-sm font-bold text-slate-950">
+              <button className="rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-5 py-2.5 text-sm font-bold text-white">
                 Create Alert
               </button>
             </div>
@@ -257,62 +257,62 @@ export default function Dashboard() {
       {tab === "Loyalty" && (
         <div className="max-w-2xl space-y-4">
           {MOCK_USER.loyaltyPrograms.map((prog) => (
-            <div key={prog.code} className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <div key={prog.code} className="rounded-2xl border border-gray-200 bg-white p-5">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-sm font-bold text-slate-200">{prog.name}</p>
-                  <span className="text-xs text-slate-500">{prog.tier} status</span>
+                  <p className="text-sm font-bold text-gray-800">{prog.name}</p>
+                  <span className="text-xs text-gray-400">{prog.tier} status</span>
                 </div>
-                <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-bold text-emerald-400">
+                <span className="rounded-full bg-violet-50 border border-violet-200 px-3 py-1 text-xs font-bold text-violet-600">
                   {prog.value}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-black text-slate-100">
+                  <p className="text-2xl font-black text-gray-900">
                     {prog.points.toLocaleString()}
                   </p>
-                  <p className="text-xs text-slate-500">points balance</p>
+                  <p className="text-xs text-gray-400">points balance</p>
                 </div>
-                <button className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-400 hover:border-emerald-500/40 hover:text-emerald-400 transition-all">
+                <button className="rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 text-xs font-semibold text-gray-500 hover:border-emerald-500/40 hover:text-violet-600 transition-all">
                   Sync Balance
                 </button>
               </div>
             </div>
           ))}
-          <div className="rounded-2xl border border-dashed border-slate-700 p-5 text-center">
-            <button className="text-sm font-semibold text-slate-400 hover:text-emerald-400 transition-colors">
+          <div className="rounded-2xl border border-dashed border-gray-300 p-5 text-center">
+            <button className="text-sm font-semibold text-gray-500 hover:text-violet-600 transition-colors">
               + Add Loyalty Program
             </button>
           </div>
           <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
             <p className="text-xs font-semibold text-amber-400 mb-1">⚡ Transfer Bonus Alert</p>
-            <p className="text-sm text-slate-300">Amex → Avios: 30% transfer bonus active until March 31. Transfer now to maximise your Avios balance.</p>
+            <p className="text-sm text-gray-700">Amex → Avios: 30% transfer bonus active until March 31. Transfer now to maximise your Avios balance.</p>
           </div>
         </div>
       )}
 
       {tab === "Savings" && (
         <div>
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 mb-6">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-slate-200">All Savings</h3>
-              <span className="text-lg font-black text-emerald-400">£{totalSaved.toFixed(2)} saved</span>
+              <h3 className="text-sm font-bold text-gray-800">All Savings</h3>
+              <span className="text-lg font-black text-violet-600">£{totalSaved.toFixed(2)} saved</span>
             </div>
             <div className="space-y-3">
               {MOCK_USER.recentSavings.map((s, i) => (
-                <div key={i} className="flex items-center justify-between py-3 border-b border-slate-800/60 last:border-0">
+                <div key={i} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                   <div>
-                    <p className="text-sm text-slate-300 font-semibold">{s.item}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{s.method} · {s.date}</p>
+                    <p className="text-sm text-gray-700 font-semibold">{s.item}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{s.method} · {s.date}</p>
                   </div>
-                  <span className="text-sm font-black text-emerald-400">+£{s.saving.toFixed(2)}</span>
+                  <span className="text-sm font-black text-violet-600">+£{s.saving.toFixed(2)}</span>
                 </div>
               ))}
             </div>
           </div>
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">
               Savings by method
             </p>
             {[
@@ -322,12 +322,12 @@ export default function Dashboard() {
             ].map((row) => (
               <div key={row.method} className="mb-3">
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate-400">{row.method}</span>
-                  <span className="text-slate-300 font-semibold">£{row.amount}</span>
+                  <span className="text-gray-500">{row.method}</span>
+                  <span className="text-gray-700 font-semibold">£{row.amount}</span>
                 </div>
-                <div className="h-2 rounded-full bg-slate-800 overflow-hidden">
+                <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500"
+                    className="h-full rounded-full bg-gradient-to-r from-violet-600 to-pink-500"
                     style={{ width: `${(row.amount / 87.4) * 100}%` }}
                   />
                 </div>

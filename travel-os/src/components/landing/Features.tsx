@@ -45,16 +45,16 @@ const FEATURES = [
 
 export default function Features() {
   return (
-    <section className="py-20 sm:py-28">
+    <section className="py-16 sm:py-24 bg-gray-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <p className="text-sm font-semibold uppercase tracking-widest text-emerald-400 mb-3">
+          <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
             Why Travel OS
           </p>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-100 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 mb-4">
             Every tool a smart traveler needs
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             Unlike Booking.com or Skyscanner, we earn when{" "}
             <em>you save</em> — not when you book. That changes everything.
           </p>
@@ -64,16 +64,16 @@ export default function Features() {
           {FEATURES.map((feature) => (
             <div
               key={feature.title}
-              className="group rounded-2xl border border-slate-800 bg-slate-900/40 p-6 transition-all hover:border-slate-700 hover:bg-slate-900/70"
+              className="group rounded-2xl border border-gray-200 bg-white p-6 transition-all hover:border-violet-200 hover:shadow-md hover:shadow-violet-50"
             >
               <div className="text-3xl mb-4">{feature.icon}</div>
-              <h3 className="text-lg font-bold text-slate-100 mb-2">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
                 {feature.title}
               </h3>
-              <p className="text-sm text-slate-400 leading-relaxed mb-4">
+              <p className="text-sm text-gray-500 leading-relaxed mb-4">
                 {feature.description}
               </p>
-              <span className="inline-block rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-400">
+              <span className="inline-block rounded-full bg-violet-50 border border-violet-200 px-3 py-1 text-xs font-semibold text-violet-600">
                 {feature.highlight}
               </span>
             </div>
