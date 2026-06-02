@@ -104,7 +104,7 @@ export default function MobileAppBanner() {
           {/* Animated phone mockup */}
           <div className="flex justify-center lg:justify-end">
             <div className="relative">
-              {/* Main phone */}
+              {/* Main phone — entrance + continuous float */}
               <motion.div
                 initial={{ opacity: 0, y: 60, rotate: 6 }}
                 whileInView={{ opacity: 1, y: 0, rotate: 0 }}
@@ -112,6 +112,11 @@ export default function MobileAppBanner() {
                 transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 className="relative z-10 rounded-[2.5rem] border-4 border-white/20 bg-white/10 backdrop-blur-sm p-3 shadow-2xl w-56"
               >
+                {/* Float animation wrapper */}
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                >
                 <div className="rounded-[2rem] bg-white overflow-hidden">
                   <div className="bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-3">
                     <div className="flex items-center justify-between mb-3">
@@ -144,6 +149,7 @@ export default function MobileAppBanner() {
                     ))}
                   </div>
                 </div>
+                </motion.div>
               </motion.div>
 
               {/* Shadow phone */}
