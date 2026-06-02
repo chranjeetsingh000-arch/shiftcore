@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { TOURISM_CARDS } from "@/lib/data";
 import type { TourismCard } from "@/lib/data";
 
@@ -166,7 +167,13 @@ export default function TourismCards() {
   return (
     <section id="tourism-cards" className="py-20 sm:py-28 border-t border-gray-200/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-12"
+        >
           <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
             Tourism Card Calculator
           </p>
@@ -177,11 +184,20 @@ export default function TourismCards() {
             Tick the attractions you&apos;re planning to visit. We&apos;ll tell
             you instantly whether the tourism card saves you money.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
-          {TOURISM_CARDS.map((card) => (
-            <CardCalculator key={card.id} card={card} />
+          {TOURISM_CARDS.map((card, i) => (
+            <motion.div
+              key={card.id}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            >
+              <CardCalculator card={card} />
+            </motion.div>
           ))}
         </div>
       </div>

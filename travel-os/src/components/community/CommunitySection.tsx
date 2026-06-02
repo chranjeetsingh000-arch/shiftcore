@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type SubmissionType = "deal" | "hack" | "voucher" | "scam" | "price";
 
@@ -116,7 +117,13 @@ export default function CommunitySection() {
     <section id="community" className="py-20 sm:py-28 border-t border-gray-200/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-12"
+        >
           <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
             Community Intelligence
           </p>
@@ -128,11 +135,17 @@ export default function CommunitySection() {
             makes Travel OS smarter for everyone. Earn reputation points and
             unlock contributor tiers.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Submission form — 2 cols */}
-          <div className="lg:col-span-2">
+          <motion.div
+            initial={{ opacity: 0, x: -32 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-2"
+          >
             {submitted ? (
               <div className="rounded-2xl border border-violet-200 bg-violet-50 p-10 text-center">
                 <div className="text-5xl mb-4">🎉</div>
@@ -364,10 +377,16 @@ export default function CommunitySection() {
                 </form>
               </div>
             )}
-          </div>
+          </motion.div>
 
           {/* Leaderboard + Tiers */}
-          <div className="space-y-5">
+          <motion.div
+            initial={{ opacity: 0, x: 32 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="space-y-5"
+          >
             {/* Leaderboard */}
             <div className="rounded-2xl border border-gray-200 bg-white p-5">
               <h3 className="text-sm font-bold text-gray-900 mb-4">
@@ -459,7 +478,7 @@ export default function CommunitySection() {
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

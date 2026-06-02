@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { motion } from "framer-motion";
 import { CASHBACK_OFFERS } from "@/lib/data";
 
 interface CostBreakdown {
@@ -151,7 +152,13 @@ export default function TripCostCalculator() {
     <section id="calculator" className="py-20 sm:py-28 border-t border-gray-200/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-12"
+        >
           <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
             True Cost Calculator
           </p>
@@ -163,11 +170,17 @@ export default function TripCostCalculator() {
             truth — including baggage fees, resort fees, transfers, and
             cashback you could be earning.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
           {/* Input panel */}
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 space-y-5">
+          <motion.div
+            initial={{ opacity: 0, x: -32 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="rounded-2xl border border-gray-200 bg-white p-6 space-y-5"
+          >
             <h3 className="text-lg font-bold text-gray-900">Trip Details</h3>
 
             {/* Destination */}
@@ -310,10 +323,16 @@ export default function TripCostCalculator() {
             >
               Calculate True Trip Cost →
             </button>
-          </div>
+          </motion.div>
 
           {/* Results panel */}
-          <div className="rounded-2xl border border-gray-200 bg-white p-6">
+          <motion.div
+            initial={{ opacity: 0, x: 32 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="rounded-2xl border border-gray-200 bg-white p-6"
+          >
             {!calculated || !breakdown ? (
               <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-center">
                 <div className="text-5xl mb-4">🧮</div>
@@ -430,7 +449,7 @@ export default function TripCostCalculator() {
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
