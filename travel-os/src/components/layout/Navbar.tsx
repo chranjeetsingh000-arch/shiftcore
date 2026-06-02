@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { href: "/deals", label: "Deals" },
   { href: "/calculator", label: "Cost Calculator" },
   { href: "/cashback", label: "Cashback" },
+  { href: "/loyalty", label: "Loyalty" },
   { href: "/community", label: "Community" },
   { href: "/dashboard", label: "Dashboard" },
 ];
